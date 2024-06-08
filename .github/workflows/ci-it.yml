@@ -22,4 +22,4 @@ jobs:
           channel: 'stable'
 
       - run: flutter pub get
-      - run: flutter test integration_test
+      - run: flutter test ui_test
