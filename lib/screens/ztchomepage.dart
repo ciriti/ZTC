@@ -32,7 +32,7 @@ class ZTCHomePageState extends State<ZTCHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('VPN Client'),
+        title: const Text('ZT Client'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
