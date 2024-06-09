@@ -30,7 +30,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.5.1
+  freezed_annotation: ^2.4.1
   go_router: ^13.2.4
+  json_annotation: ^4.9.0
   provider: ^6.1.2
 
 dev_dependencies:
@@ -43,6 +45,9 @@ dev_dependencies:
   flutter_driver:
     sdk: flutter
   test: ^1.24.9
+  json_serializable: ^6.8.0
+  freezed: ^2.5.2
+  build_runner: ^2.4.11
 # The following section is specific to Flutter packages.
 flutter:
 
