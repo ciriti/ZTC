@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ztc/screens/ztchomepage.dart';
+import 'package:ztc/src/app.dart';
 
 void main() {
   runApp(const ZTCApp());
