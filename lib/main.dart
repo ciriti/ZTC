@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ztc/screens/ztchomepage.dart';
+import 'package:ztc/src/app.dart';
+import 'package:ztc/src/features/authentication/registration.dart';
 
 void main() {
+  final IRegistrationAPI registrationAPI = buildApiClient(
+    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
+    authKey: '3735928559',
+  );
   runApp(const ZTCApp());
 }
 

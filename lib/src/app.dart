@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ztc/screens/widgets.dart';
+import 'package:ztc/src/widgets.dart';
+import 'constants/app_sizes.dart';
 
 class ZTCHomePage extends StatefulWidget {
   const ZTCHomePage({super.key});
@@ -35,14 +36,14 @@ class ZTCHomePageState extends State<ZTCHomePage> {
         title: const Text('ZT Client'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: insets16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Status(status: _status),
-            const SizedBox(height: 20),
+            gapH20,
             Buttons(onConnect: _connect, onDisconnect: _disconnect),
-            const SizedBox(height: 20),
+            gapH20,
             Logs(log: _log),
           ],
         ),
