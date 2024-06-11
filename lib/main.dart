@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:ztc/src/app.dart';
-import 'package:ztc/src/features/authentication/registration.dart';
+import 'package:ztc/src/datalayer/registration.dart';
 
-void main() {
-  final IRegistrationAPI registrationAPI = buildApiClient(
+void main() async {
+  final IRegistrationAPI client = buildApiClient(
     baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
     authKey: '3735928559',
   );
+
+  var token = await client.getAuthToken();
+  token.fold(
+    (l) {
+      print(l.message);
+    },
+    (r) {
+      print(r);
+    },
+  );
+
   runApp(const ZTCApp());
 }
-
 class ZTCApp extends StatelessWidget {
   const ZTCApp({super.key});
 

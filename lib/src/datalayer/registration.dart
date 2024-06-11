@@ -17,6 +17,11 @@ IRegistrationAPI buildApiClient({
   );
 }
 
+class ApiConstants {
+  static const String statusSuccess = 'success';
+  static const String headerAuthKey = 'X-Auth-Key';
+}
+
 class _RegistrationAPI implements IRegistrationAPI {
   final Dio _dio;
   final String baseUrl;
@@ -31,10 +36,11 @@ class _RegistrationAPI implements IRegistrationAPI {
     return await safeExecute(() async {
       final response = await _dio.get(
         baseUrl,
-        options: Options(headers: {'X-Auth-Key': authKey}),
+        options: Options(headers: {ApiConstants.headerAuthKey: authKey}),
       );
 
-      if (response.statusCode == 200 && response.data['status'] == 'success') {
+      if (response.statusCode == 200 &&
+          response.data['status'] == ApiConstants.statusSuccess) {
         return response.data['data']['auth_token'].toString();
       } else {
         throw Exception(response.data['message']);
