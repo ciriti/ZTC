@@ -1,51 +1,23 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:ztc/src/datalayer/daemon.dart';
-import 'package:ztc/src/datalayer/socket_state.dart';
-import 'package:ztc/src/widgets.dart';
+import 'package:ztc/src/datalayer/daemon2.dart';
 import 'constants/app_sizes.dart';
 import 'package:ztc/src/datalayer/registration.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ZTCHomePage extends StatefulWidget {
+class ZTCHomePage extends ConsumerStatefulWidget {
   const ZTCHomePage({super.key});
 
   @override
-  ZTCHomePageState createState() => ZTCHomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => ZTCHomePageState();
 }
 
-class ZTCHomePageState extends State<ZTCHomePage> {
-  final DaemonConnection _daemonConnection = DaemonConnection();
-  late StreamSubscription<SocketState> _stateSubscription;
-  String _status = 'Disconnected';
+class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   final List<String> _log = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _stateSubscription = _daemonConnection.state.listen((state) {
-      setState(() {
-        _log.add(state.toString());
-        if (state is SocketConnected) {
-          _status = 'Connected';
-        } else if (state is SocketDisconnected) {
-          _status = 'Disconnected';
-        } else if (state is SocketError) {
-          _status = 'Error: ${state.message}';
-        }
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _stateSubscription.cancel();
-    _daemonConnection.dispose();
-    super.dispose();
-  }
-
   void _connect() async {
-    _log.add('Attempting to connect...');
+    setState(() {
+      _log.add('Attempting to connect...');
+    });
 
     final IRegistrationAPI client = buildApiClient(
       baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
@@ -58,7 +30,6 @@ class ZTCHomePageState extends State<ZTCHomePage> {
       (failure) {
         setState(() {
           _log.add('Error: ${failure.message}');
-          _status = 'Error: ${failure.message}';
           print('Error: ${failure.message}');
         });
       },
@@ -67,18 +38,26 @@ class ZTCHomePageState extends State<ZTCHomePage> {
           _log.add(
               'Token received[$authToken], attempting to connect to daemon...');
         });
-        await _daemonConnection.connect(authToken: int.parse(authToken));
+        // Connect to the socket
+        ref
+            .read(daemonConnectionProvider.notifier)
+            .connect(int.parse(authToken));
       },
     );
   }
 
   void _disconnect() async {
-    _log.add('Attempting to disconnect...');
-    await _daemonConnection.disconnect();
+    setState(() {
+      _log.add('Attempting to disconnect...');
+    });
+    // Disconnect from the socket
+    ref.read(daemonConnectionProvider.notifier).disconnect();
   }
 
   @override
   Widget build(BuildContext context) {
+    final socketState = ref.watch(daemonConnectionProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('ZT Client'),
@@ -88,7 +67,7 @@ class ZTCHomePageState extends State<ZTCHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Status(status: _status),
+            Status(status: socketState.last.toString()),
             gapH20,
             Buttons(onConnect: _connect, onDisconnect: _disconnect),
             gapH20,
@@ -96,6 +75,79 @@ class ZTCHomePageState extends State<ZTCHomePage> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class Buttons extends StatelessWidget {
+  final VoidCallback onConnect;
+  final VoidCallback onDisconnect;
+
+  const Buttons({
+    super.key,
+    required this.onConnect,
+    required this.onDisconnect,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        ElevatedButton(
+          onPressed: onConnect,
+          child: const Text('Connect'),
+        ),
+        ElevatedButton(
+          onPressed: onDisconnect,
+          child: const Text('Disconnect'),
+        ),
+      ],
+    );
+  }
+}
+
+class Logs extends StatelessWidget {
+  const Logs({
+    super.key,
+    required List<String> log,
+  }) : _log = log;
+
+  final List<String> _log;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: ListView.builder(
+          itemCount: _log.length,
+          itemBuilder: (context, index) {
+            return Text(_log[index]);
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class Status extends StatelessWidget {
+  const Status({
+    super.key,
+    required String status,
+  }) : _status = status;
+
+  final String _status;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      'Status: $_status',
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 }

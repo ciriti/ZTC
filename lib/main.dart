@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ztc/src/app.dart';
 import 'package:ztc/src/datalayer/registration.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   final IRegistrationAPI client = buildApiClient(
@@ -18,8 +19,13 @@ void main() async {
     },
   );
 
-  runApp(const ZTCApp());
+  runApp(
+    const ProviderScope(
+      child: ZTCApp(),
+    ),
+  );
 }
+
 class ZTCApp extends StatelessWidget {
   const ZTCApp({super.key});
 
