@@ -57,12 +57,11 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
       socket.add(payloadSize.toBytes());
       socket.add(payloadBytes);
 
-      List<int> responseSizeBytes = await _readBytes(socket, 8);
-      int responseSize = responseSizeBytes.toInt();
-      List<int> responseBytes = await _readBytes(socket, responseSize);
-      String jsonResponse = utf8.decode(responseBytes);
+      // Read the response size
+      final jsonResponse = await _readBytes(socket);
+      print('Received response: $jsonResponse');
 
-      return jsonDecode(jsonResponse);
+      return jsonResponse;
     } finally {
       socket.close();
     }
@@ -78,18 +77,26 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
     return socket;
   }
 
-  Future<List<int>> _readBytes(Socket socket, int numBytes) async {
-    final Completer<List<int>> completer = Completer<List<int>>();
-    final List<int> buffer = [];
+  Future<Map<String, dynamic>> _readBytes(Socket socket) async {
+    final completer = Completer<Map<String, dynamic>>();
     int bytesRead = 0;
 
     socket.listen(
       (data) {
-        buffer.addAll(data);
-        bytesRead += data.length;
-        if (buffer.length >= numBytes) {
-          completer.complete(buffer.sublist(0, numBytes));
-        }
+        // Extract the payload size from the first 8 bytes
+        int payloadSize =
+            data.sublist(0, 8).reversed.fold(0, (a, b) => (a << 8) + b);
+
+        // Extract the JSON payload
+        List<int> jsonPayloadBytes = data.sublist(8, 8 + payloadSize);
+
+        // Decode the JSON payload
+        String jsonString = utf8.decode(jsonPayloadBytes);
+        Map<String, dynamic> json = jsonDecode(jsonString);
+
+        print(json);
+
+        completer.complete(json);
       },
       onError: (error, StackTrace stackTrace) {
         completer.completeError(error, stackTrace);
@@ -97,7 +104,7 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
       onDone: () {
         if (!completer.isCompleted) {
           completer.completeError(Exception(
-              'Socket closed before receiving enough data. Bytes read: $bytesRead, Expected: $numBytes'));
+              'Socket closed before receiving enough data. Bytes read: $bytesRead'));
         }
       },
       cancelOnError: true,
