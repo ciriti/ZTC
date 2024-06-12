@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:ztc/src/datalayer/daemon.dart';
-import 'constants/app_sizes.dart';
-import 'package:ztc/src/datalayer/registration.dart';
+import 'package:ztc/src/data/daemon_connection_notifier.dart';
+import 'package:ztc/src/data/socket_state.dart';
+import '../../utils/app_sizes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ZTCHomePage extends ConsumerStatefulWidget {
@@ -13,37 +15,14 @@ class ZTCHomePage extends ConsumerStatefulWidget {
 
 class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   final List<String> _log = [];
+  Timer? _timer;
 
   void _connect() async {
     setState(() {
       _log.add('Attempting to connect...');
     });
 
-    final IRegistrationAPI client = buildApiClient(
-      baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
-      authKey: '3735928559',
-    );
-
-    var tokenResult = await client.getAuthToken();
-
-    tokenResult.fold(
-      (failure) {
-        setState(() {
-          _log.add('Error: ${failure.message}');
-          print('Error: ${failure.message}');
-        });
-      },
-      (authToken) async {
-        setState(() {
-          _log.add(
-              'Token received[$authToken], attempting to connect to daemon...');
-        });
-        // Connect to the socket
-        ref
-            .read(daemonConnectionProvider.notifier)
-            .connect(int.parse(authToken));
-      },
-    );
+    ref.read(daemonConnectionProvider.notifier).connect();
   }
 
   void _disconnect() async {
@@ -55,8 +34,27 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _startLogging();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  void _startLogging() {
+    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      ref.read(daemonConnectionProvider.notifier).getStatus();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final socketState = ref.watch(daemonConnectionProvider);
+    _addLog(socketState, _log);
 
     return Scaffold(
       appBar: AppBar(
@@ -67,7 +65,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Status(status: socketState.toString()),
+            Status(status: _getStatus(socketState)),
             gapH20,
             Buttons(onConnect: _connect, onDisconnect: _disconnect),
             gapH20,
@@ -76,6 +74,21 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
         ),
       ),
     );
+  }
+
+  void _addLog(SocketState socketState, List<String> log) {
+    if (socketState is SocketConnected ||
+        socketState is SocketDisconnected ||
+        socketState is SocketError) {
+      log.add(socketState.toString());
+    }
+  }
+
+  String _getStatus(SocketState socketState) {
+    if (socketState is SocketError) {
+      return "Error";
+    }
+    return socketState.toString();
   }
 }
 

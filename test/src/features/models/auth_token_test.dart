@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:ztc/src/models/auth_token.dart';
+import 'package:ztc/src/domain/models/auth_token.dart';
 
 void main() {
   group('AuthToken', () {

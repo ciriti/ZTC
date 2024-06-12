@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ztc/src/app.dart';
-import 'package:ztc/src/datalayer/registration.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:ztc/src/presentation/pages/ztc_home_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
-  final IRegistrationAPI client = buildApiClient(
-    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
-    authKey: '3735928559',
-  );
+  WidgetsFlutterBinding.ensureInitialized();
 
-  var token = await client.getAuthToken();
-  token.fold(
-    (l) {
-      print(l.message);
-    },
-    (r) {
-      print(r);
-    },
-  );
+  var tempDir = await getTemporaryDirectory();
+  print('Please use this directory for the daemon-lite[$tempDir]');
 
   runApp(
     const ProviderScope(

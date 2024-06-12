@@ -1,20 +1,9 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 import 'package:dio/dio.dart';
 
-abstract class IRegistrationAPI {
+abstract class AuthService {
   Future<ResultFuture<String>> getAuthToken();
-}
-
-IRegistrationAPI buildApiClient({
-  required String baseUrl,
-  required String authKey,
-  Dio? dio,
-}) {
-  return _RegistrationAPI(
-    baseUrl: baseUrl,
-    authKey: authKey,
-    dio: dio ?? Dio(),
-  );
 }
 
 class ApiConstants {
@@ -22,12 +11,12 @@ class ApiConstants {
   static const String headerAuthKey = 'X-Auth-Key';
 }
 
-class _RegistrationAPI implements IRegistrationAPI {
+class _AuthServiceImpl implements AuthService {
   final Dio _dio;
   final String baseUrl;
   final String authKey;
 
-  _RegistrationAPI(
+  _AuthServiceImpl(
       {required Dio dio, required this.baseUrl, required this.authKey})
       : _dio = dio;
 
@@ -48,3 +37,11 @@ class _RegistrationAPI implements IRegistrationAPI {
     });
   }
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  return _AuthServiceImpl(
+    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
+    authKey: '3735928559',
+    dio: Dio(),
+  );
+});
