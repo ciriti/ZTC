@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:ztc/src/data/bytes_manager.dart';
+import 'package:ztc/src/data/bytes_manager_provider.dart';
 import 'package:ztc/src/data/socket_state.dart';
 import 'package:ztc/src/data/auth_service.dart';
 import 'package:ztc/src/utils/ext.dart';

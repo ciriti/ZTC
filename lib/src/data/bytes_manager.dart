@@ -8,6 +8,10 @@ abstract class BytesManager {
   Future<Map<String, dynamic>> readBytes(Socket socket);
 }
 
+BytesManager buildBytesManager() {
+  return _BytesManagerImpl();
+}
+
 class _BytesManagerImpl implements BytesManager {
   @override
   Future<Map<String, dynamic>> readBytes(Socket socket) async {
@@ -46,7 +50,3 @@ class _BytesManagerImpl implements BytesManager {
     return completer.future;
   }
 }
-
-final bytesManagerProvider = Provider<BytesManager>((ref) {
-  return _BytesManagerImpl();
-});
