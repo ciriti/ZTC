@@ -7,7 +7,7 @@ import 'package:ztc/src/datalayer/bytes_manager.dart';
 import 'package:ztc/src/datalayer/socket_state.dart';
 
 class DaemonConnectionNotifier extends StateNotifier<SocketState> {
-  final Bytesmanager bytesManager;
+  final BytesManager bytesManager;
 
   DaemonConnectionNotifier(this.bytesManager) : super(const SocketInitial());
 

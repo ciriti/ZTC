@@ -4,7 +4,18 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class Bytesmanager {
+abstract class BytesManager {
+  Future<Map<String, dynamic>> readBytes(Socket socket);
+}
+
+class BytesManagerFactory {
+  static BytesManager create() {
+    return _BytesManagerImpl();
+  }
+}
+
+class _BytesManagerImpl implements BytesManager {
+  @override
   Future<Map<String, dynamic>> readBytes(Socket socket) async {
     final completer = Completer<Map<String, dynamic>>();
     int bytesRead = 0;
@@ -42,6 +53,6 @@ class Bytesmanager {
   }
 }
 
-final bytesManagerProvider = Provider<Bytesmanager>((ref) {
-  return Bytesmanager();
+final bytesManagerProvider = Provider<BytesManager>((ref) {
+  return BytesManagerFactory.create();
 });
