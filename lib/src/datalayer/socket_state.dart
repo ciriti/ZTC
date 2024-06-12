@@ -44,3 +44,11 @@ final class SocketError extends SocketState {
   @override
   String toString() => 'SocketError(message: $message)';
 }
+
+final class SocketDataReceived extends SocketState {
+  final String message;
+  const SocketDataReceived(this.message);
+
+  @override
+  String toString() => message;
+}

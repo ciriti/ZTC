@@ -3,10 +3,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:ztc/src/datalayer/bytes_manager.dart';
 import 'package:ztc/src/datalayer/socket_state.dart';
 
 class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
-  DaemonConnectionNotifier() : super([const SocketInitial()]);
+  final Bytesmanager bytesManager;
+
+  DaemonConnectionNotifier(this.bytesManager) : super([const SocketInitial()]);
 
   Future<void> connect(int authToken) async {
     state = [...state, const SocketConnecting()];
@@ -136,5 +139,6 @@ extension BytesInt on List<int> {
 
 final daemonConnectionProvider =
     StateNotifierProvider<DaemonConnectionNotifier, List<SocketState>>((ref) {
-  return DaemonConnectionNotifier();
+  final bytesManager = ref.read(bytesManagerProvider);
+  return DaemonConnectionNotifier(bytesManager);
 });
