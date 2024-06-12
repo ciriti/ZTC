@@ -17,3 +17,8 @@ extension BytesInt on List<int> {
     return value;
   }
 }
+
+bool isTimestampExpired(int timestamp, int validitySeconds) {
+  final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+  return (currentTime - timestamp) > validitySeconds;
+}

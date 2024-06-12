@@ -1,21 +1,24 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthTokenDataStore {
+  static const String keyAuthToken = 'auth_token';
+  static const String keyTokenTimestamp = 'token_timestamp';
   Future<void> saveAuthToken(String token);
   Future<String?> getAuthToken();
   Future<void> clearAuthToken();
 }
 
-AuthTokenDataStore buildAuthTokenDataStore() {
+AuthTokenDataStore buildAuthTokenDataStore({
+  required bool Function(int, int) isTimestampExpired,
+  required int tokenValidityDuration,
+}) {
   return _AuthTokenDataStore(
-    isTimestampExpired: _isTimestampExpired,
-    tokenValidityDuration: 5,
+    isTimestampExpired: isTimestampExpired,
+    tokenValidityDuration: tokenValidityDuration,
   );
 }
 
 class _AuthTokenDataStore implements AuthTokenDataStore {
-  static const String _keyAuthToken = 'auth_token';
-  static const String _keyTokenTimestamp = 'token_timestamp';
   final int _tokenValidityDuration; // in seconds
   final bool Function(int, int) isTimestampExpired;
 
@@ -26,15 +29,15 @@ class _AuthTokenDataStore implements AuthTokenDataStore {
   @override
   Future<void> saveAuthToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_keyAuthToken, token);
-    await prefs.setInt(
-        _keyTokenTimestamp, DateTime.now().millisecondsSinceEpoch ~/ 1000);
+    await prefs.setString(AuthTokenDataStore.keyAuthToken, token);
+    await prefs.setInt(AuthTokenDataStore.keyTokenTimestamp,
+        DateTime.now().millisecondsSinceEpoch ~/ 1000);
   }
 
   @override
   Future<String?> getAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
-    final timestamp = prefs.getInt(_keyTokenTimestamp);
+    final timestamp = prefs.getInt(AuthTokenDataStore.keyTokenTimestamp);
     if (timestamp == null) {
       return null;
     }
@@ -42,18 +45,13 @@ class _AuthTokenDataStore implements AuthTokenDataStore {
       await clearAuthToken();
       return null;
     }
-    return prefs.getString(_keyAuthToken);
+    return prefs.getString(AuthTokenDataStore.keyAuthToken);
   }
 
   @override
   Future<void> clearAuthToken() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_keyAuthToken);
-    await prefs.remove(_keyTokenTimestamp);
+    await prefs.remove(AuthTokenDataStore.keyAuthToken);
+    await prefs.remove(AuthTokenDataStore.keyTokenTimestamp);
   }
-}
-
-bool _isTimestampExpired(int timestamp, int validitySeconds) {
-  final currentTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  return (currentTime - timestamp) > validitySeconds;
 }

@@ -6,7 +6,7 @@ part of 'auth_token_data_store_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authTokenHash() => r'aab1e7f134020bdd9299c49f40774bb9c89f8d12';
+String _$authTokenHash() => r'755d7f7a7cce6407210e33f01b4360e1d44d1538';
 
 /// See also [authToken].
 @ProviderFor(authToken)
