@@ -6,13 +6,13 @@ import 'package:path_provider/path_provider.dart';
 import 'package:ztc/src/datalayer/bytes_manager.dart';
 import 'package:ztc/src/datalayer/socket_state.dart';
 
-class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
+class DaemonConnectionNotifier extends StateNotifier<SocketState> {
   final Bytesmanager bytesManager;
 
-  DaemonConnectionNotifier(this.bytesManager) : super([const SocketInitial()]);
+  DaemonConnectionNotifier(this.bytesManager) : super(const SocketInitial());
 
   Future<void> connect(int authToken) async {
-    state = [...state, const SocketConnecting()];
+    state = const SocketConnecting();
 
     try {
       final result = await _sendRequest({
@@ -22,17 +22,17 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
       });
 
       if (result['data']['daemon_status'] == 'connected') {
-        state = [...state, const SocketConnected()];
+        state = const SocketConnected();
       } else {
-        state = [...state, const SocketError('Failed to connect')];
+        state = const SocketError('Failed to connect');
       }
     } catch (e) {
-      state = [...state, SocketError(e.toString())];
+      state = SocketError(e.toString());
     }
   }
 
   Future<void> disconnect() async {
-    state = [...state, const SocketDisconnecting()];
+    state = const SocketDisconnecting();
 
     try {
       final result = await _sendRequest({
@@ -40,12 +40,12 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
       });
 
       if (result['data']['daemon_status'] == 'disconnected') {
-        state = [...state, const SocketDisconnected()];
+        state = const SocketDisconnected();
       } else {
-        state = [...state, const SocketError('Failed to disconnect')];
+        state = const SocketError('Failed to disconnect');
       }
     } catch (e) {
-      state = [...state, SocketError(e.toString())];
+      state = SocketError(e.toString());
     }
   }
 
@@ -61,7 +61,7 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
       socket.add(payloadBytes);
 
       // Read the response size
-      final jsonResponse = await _readBytes(socket);
+      final jsonResponse = await bytesManager.readBytes(socket);
       print('Received response: $jsonResponse');
 
       return jsonResponse;
@@ -80,41 +80,41 @@ class DaemonConnectionNotifier extends StateNotifier<List<SocketState>> {
     return socket;
   }
 
-  Future<Map<String, dynamic>> _readBytes(Socket socket) async {
-    final completer = Completer<Map<String, dynamic>>();
-    int bytesRead = 0;
+//   Future<Map<String, dynamic>> _readBytes(Socket socket) async {
+//     final completer = Completer<Map<String, dynamic>>();
+//     int bytesRead = 0;
 
-    socket.listen(
-      (data) {
-        // Extract the payload size from the first 8 bytes
-        int payloadSize =
-            data.sublist(0, 8).reversed.fold(0, (a, b) => (a << 8) + b);
+//     socket.listen(
+//       (data) {
+//         // Extract the payload size from the first 8 bytes
+//         int payloadSize =
+//             data.sublist(0, 8).reversed.fold(0, (a, b) => (a << 8) + b);
 
-        // Extract the JSON payload
-        List<int> jsonPayloadBytes = data.sublist(8, 8 + payloadSize);
+//         // Extract the JSON payload
+//         List<int> jsonPayloadBytes = data.sublist(8, 8 + payloadSize);
 
-        // Decode the JSON payload
-        String jsonString = utf8.decode(jsonPayloadBytes);
-        Map<String, dynamic> json = jsonDecode(jsonString);
+//         // Decode the JSON payload
+//         String jsonString = utf8.decode(jsonPayloadBytes);
+//         Map<String, dynamic> json = jsonDecode(jsonString);
 
-        print(json);
+//         print(json);
 
-        completer.complete(json);
-      },
-      onError: (error, StackTrace stackTrace) {
-        completer.completeError(error, stackTrace);
-      },
-      onDone: () {
-        if (!completer.isCompleted) {
-          completer.completeError(Exception(
-              'Socket closed before receiving enough data. Bytes read: $bytesRead'));
-        }
-      },
-      cancelOnError: true,
-    );
+//         completer.complete(json);
+//       },
+//       onError: (error, StackTrace stackTrace) {
+//         completer.completeError(error, stackTrace);
+//       },
+//       onDone: () {
+//         if (!completer.isCompleted) {
+//           completer.completeError(Exception(
+//               'Socket closed before receiving enough data. Bytes read: $bytesRead'));
+//         }
+//       },
+//       cancelOnError: true,
+//     );
 
-    return completer.future;
-  }
+//     return completer.future;
+//   }
 }
 
 extension IntBytes on int {
@@ -138,7 +138,7 @@ extension BytesInt on List<int> {
 }
 
 final daemonConnectionProvider =
-    StateNotifierProvider<DaemonConnectionNotifier, List<SocketState>>((ref) {
+    StateNotifierProvider<DaemonConnectionNotifier, SocketState>((ref) {
   final bytesManager = ref.read(bytesManagerProvider);
   return DaemonConnectionNotifier(bytesManager);
 });

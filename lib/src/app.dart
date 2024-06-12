@@ -67,7 +67,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Status(status: socketState.last.toString()),
+            Status(status: socketState.toString()),
             gapH20,
             Buttons(onConnect: _connect, onDisconnect: _disconnect),
             gapH20,
@@ -107,13 +107,36 @@ class Buttons extends StatelessWidget {
   }
 }
 
-class Logs extends StatelessWidget {
+class Logs extends StatefulWidget {
   const Logs({
     super.key,
     required List<String> log,
   }) : _log = log;
 
   final List<String> _log;
+
+  @override
+  State<Logs> createState() => _LogsState();
+}
+
+class _LogsState extends State<Logs> {
+  late ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void didUpdateWidget(Logs oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +148,10 @@ class Logs extends StatelessWidget {
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: ListView.builder(
-          itemCount: _log.length,
+          controller: _scrollController,
+          itemCount: widget._log.length,
           itemBuilder: (context, index) {
-            return Text(_log[index]);
+            return Text(widget._log[index]);
           },
         ),
       ),

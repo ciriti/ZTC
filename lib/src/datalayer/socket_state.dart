@@ -6,35 +6,35 @@ final class SocketInitial extends SocketState {
   const SocketInitial();
 
   @override
-  String toString() => 'SocketInitial()';
+  String toString() => 'Init';
 }
 
 final class SocketConnecting extends SocketState {
   const SocketConnecting();
 
   @override
-  String toString() => 'SocketConnecting()';
+  String toString() => 'Connecting';
 }
 
 final class SocketConnected extends SocketState {
   const SocketConnected();
 
   @override
-  String toString() => 'SocketConnected()';
+  String toString() => 'Connected';
 }
 
 final class SocketDisconnecting extends SocketState {
   const SocketDisconnecting();
 
   @override
-  String toString() => 'SocketDisconnecting()';
+  String toString() => 'Disconnecting';
 }
 
 final class SocketDisconnected extends SocketState {
   const SocketDisconnected();
 
   @override
-  String toString() => 'SocketDisconnected()';
+  String toString() => 'Disconnected';
 }
 
 final class SocketError extends SocketState {
@@ -42,7 +42,7 @@ final class SocketError extends SocketState {
   const SocketError(this.message);
 
   @override
-  String toString() => 'SocketError(message: $message)';
+  String toString() => 'Error(message: $message)';
 }
 
 final class SocketDataReceived extends SocketState {
