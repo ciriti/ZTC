@@ -1,8 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/application/services/auth_service_provider.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
@@ -10,8 +7,9 @@ import 'package:ztc/src/data/auth_token_data_store_provider.dart';
 import 'package:ztc/src/data/bytes_manager.dart';
 import 'package:ztc/src/data/bytes_manager_provider.dart';
 import 'package:ztc/src/data/log_manager.dart';
+import 'package:ztc/src/data/socket_repository.dart';
+import 'package:ztc/src/data/socket_repository_provider.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
-import 'package:ztc/src/utils/ext.dart';
 import 'package:ztc/src/data/log_manager_provider.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
@@ -20,9 +18,10 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
   final AuthService authService;
   final LogManager logManager;
   final AuthTokenDataStore authTokenDataStore;
+  final SocketRepository socketRepository;
 
   ConnectionServiceNotifier(this.bytesManager, this.authService,
-      this.logManager, this.authTokenDataStore)
+      this.logManager, this.authTokenDataStore, this.socketRepository)
       : super(const SocketDisconnected());
 
   Future<void> connect() async {
@@ -56,7 +55,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
   Future<void> _handleAuthToken(String authToken) async {
     try {
-      final result = await _sendRequest({
+      final result = await socketRepository.sendRequest({
         "request": {
           "connect": int.parse(authToken),
         }
@@ -86,7 +85,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     state = const SocketDisconnecting();
 
     try {
-      final result = await _sendRequest({
+      final result = await socketRepository.sendRequest({
         "request": "disconnect",
       });
 
@@ -106,11 +105,11 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
   Future<void> getStatus() async {
     logManager.addLog('Status: Attempting to refresh...');
     try {
-      final result = await _sendRequest({
+      final result = await socketRepository.sendRequest({
         "request": "get_status",
       });
 
-      print(result);
+      print(result); // TODO remove this line
       logManager.addLog('Status: [$result]');
 
       if (result['data']['daemon_status'] == 'connected') {
@@ -128,37 +127,6 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
       logManager.addLog("Status: Error ${e.toString()}");
     }
   }
-
-  Future<Map<String, dynamic>> _sendRequest(
-      Map<String, dynamic> requestPayload) async {
-    final socket = await _connectToSocket();
-
-    try {
-      String jsonPayload = jsonEncode(requestPayload);
-      List<int> payloadBytes = utf8.encode(jsonPayload);
-      int payloadSize = payloadBytes.length;
-      socket.add(payloadSize.toBytes());
-      socket.add(payloadBytes);
-
-      // Read the response size
-      final jsonResponse = await bytesManager.readBytes(socket);
-      print('Received response: $jsonResponse');
-
-      return jsonResponse;
-    } finally {
-      socket.close();
-    }
-  }
-
-  Future<Socket> _connectToSocket() async {
-    var tempDir = await getTemporaryDirectory();
-    String socketPath = "${tempDir.path}/daemon-lite";
-    final socket = await Socket.connect(
-      InternetAddress(socketPath, type: InternetAddressType.unix),
-      0,
-    );
-    return socket;
-  }
 }
 
 final connectionServiceNotifierProvider =
@@ -166,7 +134,13 @@ final connectionServiceNotifierProvider =
   final bytesManager = ref.read(bytesManagerProvider);
   final AuthService client = ref.read(authServiceProvider);
   final logManager = ref.read(logManagerProvider);
+  final SocketRepository socketRepository = ref.read(socketRepositoryProvider);
   final AuthTokenDataStore authTokenDS = ref.read(authTokenProvider);
   return ConnectionServiceNotifier(
-      bytesManager, client, logManager, authTokenDS);
+    bytesManager,
+    client,
+    logManager,
+    authTokenDS,
+    socketRepository,
+  );
 });
