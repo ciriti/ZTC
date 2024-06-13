@@ -10,12 +10,15 @@ class ApiConstants {
   static const String headerAuthKey = 'X-Auth-Key';
 }
 
-AuthService authServiceFactory() {
+AuthService authServiceFactory({
+  required Dio dio,
+  required String baseUrl,
+  required String authKey,
+}) {
   return _AuthServiceImpl(
-    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
-    authKey:
-        '3735928559', // TODO hide the authKey using the .env plugin https://pub.dev/packages/flutter_dotenv
-    dio: Dio(),
+    baseUrl: baseUrl,
+    authKey: authKey,
+    dio: dio,
   );
 }
 
