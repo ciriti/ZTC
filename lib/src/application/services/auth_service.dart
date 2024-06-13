@@ -1,28 +1,33 @@
 import 'package:ztc/src/exceptions/safe_execution.dart';
 import 'package:dio/dio.dart';
 
-abstract class IRegistrationAPI {
+abstract class AuthService {
   Future<ResultFuture<String>> getAuthToken();
 }
 
-IRegistrationAPI buildApiClient({
+class ApiConstants {
+  static const String statusSuccess = 'success';
+  static const String headerAuthKey = 'X-Auth-Key';
+}
+
+AuthService authServiceFactory({
+  required Dio dio,
   required String baseUrl,
   required String authKey,
-  Dio? dio,
 }) {
-  return _RegistrationAPI(
+  return _AuthServiceImpl(
     baseUrl: baseUrl,
     authKey: authKey,
-    dio: dio ?? Dio(),
+    dio: dio,
   );
 }
 
-class _RegistrationAPI implements IRegistrationAPI {
+class _AuthServiceImpl implements AuthService {
   final Dio _dio;
   final String baseUrl;
   final String authKey;
 
-  _RegistrationAPI(
+  _AuthServiceImpl(
       {required Dio dio, required this.baseUrl, required this.authKey})
       : _dio = dio;
 
@@ -31,10 +36,11 @@ class _RegistrationAPI implements IRegistrationAPI {
     return await safeExecute(() async {
       final response = await _dio.get(
         baseUrl,
-        options: Options(headers: {'X-Auth-Key': authKey}),
+        options: Options(headers: {ApiConstants.headerAuthKey: authKey}),
       );
 
-      if (response.statusCode == 200 && response.data['status'] == 'success') {
+      if (response.statusCode == 200 &&
+          response.data['status'] == ApiConstants.statusSuccess) {
         return response.data['data']['auth_token'].toString();
       } else {
         throw Exception(response.data['message']);
