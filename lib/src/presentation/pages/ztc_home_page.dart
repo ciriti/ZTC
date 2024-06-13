@@ -41,6 +41,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   void _startLogging() {
     _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
       ref.read(daemonConnectionProvider.notifier).getStatus();
+      setState(() {});
     });
   }
 
