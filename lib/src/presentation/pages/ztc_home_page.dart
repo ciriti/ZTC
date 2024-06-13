@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ztc/src/data/daemon_connection_notifier.dart';
 import 'package:ztc/src/data/log_manager_provider.dart';
 import 'package:ztc/src/data/socket_state.dart';
+import 'package:ztc/src/data/timer_manager_provider.dart';
 import '../../utils/app_sizes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,8 +16,6 @@ class ZTCHomePage extends ConsumerStatefulWidget {
 }
 
 class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
-  Timer? _timer;
-
   void _connect() async {
     ref.read(daemonConnectionProvider.notifier).connect();
   }
@@ -29,20 +28,16 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   @override
   void initState() {
     super.initState();
-    _startLogging();
+    final timeManager = ref.read(timerManagerProvider);
+    timeManager.startLogging(() {
+      ref.read(daemonConnectionProvider.notifier).getStatus();
+      setState(() {});
+    });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     super.dispose();
-  }
-
-  void _startLogging() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      ref.read(daemonConnectionProvider.notifier).getStatus();
-      setState(() {});
-    });
   }
 
   @override
