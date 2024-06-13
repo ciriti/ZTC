@@ -1,25 +1,25 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'socket_repository_provider.dart';
+part of 'bytes_converter_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$socketRepositoryHash() => r'31a12a4dfe9ee060191c5efb49f0111663c0d767';
+String _$bytesConvertedHash() => r'61aff667c8c14a1f947d2447230ce55a668917cb';
 
-/// See also [socketRepository].
-@ProviderFor(socketRepository)
-final socketRepositoryProvider = AutoDisposeProvider<SocketRepository>.internal(
-  socketRepository,
-  name: r'socketRepositoryProvider',
+/// See also [bytesConverted].
+@ProviderFor(bytesConverted)
+final bytesConvertedProvider = AutoDisposeProvider<BytesConverted>.internal(
+  bytesConverted,
+  name: r'bytesConvertedProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$socketRepositoryHash,
+      : _$bytesConvertedHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef SocketRepositoryRef = AutoDisposeProviderRef<SocketRepository>;
+typedef BytesConvertedRef = AutoDisposeProviderRef<BytesConverted>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

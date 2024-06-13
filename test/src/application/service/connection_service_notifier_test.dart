@@ -6,21 +6,21 @@ import 'package:mocktail/mocktail.dart';
 import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/application/services/connection_service_notifier.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
-import 'package:ztc/src/data/bytes_manager.dart';
-import 'package:ztc/src/data/log_manager.dart';
-import 'package:ztc/src/data/socket_repository.dart';
+import 'package:ztc/src/data/bytes_converter.dart';
+import 'package:ztc/src/data/log_data_store.dart';
+import 'package:ztc/src/data/socket_data_store.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 
 // Mock classes
-class MockBytesManager extends Mock implements BytesManager {}
+class MockBytesManager extends Mock implements BytesConverted {}
 
 class MockAuthService extends Mock implements AuthService {}
 
-class MockLogManager extends Mock implements LogManager {}
+class MockLogManager extends Mock implements LogDataStore {}
 
 class MockAuthTokenDataStore extends Mock implements AuthTokenDataStore {}
 
-class MockSocketRepository extends Mock implements SocketRepository {}
+class MockSocketRepository extends Mock implements SocketDataStore {}
 
 void main() {
   late MockBytesManager mockBytesManager;

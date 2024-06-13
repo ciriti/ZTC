@@ -4,23 +4,23 @@ import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/application/services/auth_service_provider.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
 import 'package:ztc/src/data/auth_token_data_store_provider.dart';
-import 'package:ztc/src/data/bytes_manager.dart';
-import 'package:ztc/src/data/bytes_manager_provider.dart';
-import 'package:ztc/src/data/log_manager.dart';
-import 'package:ztc/src/data/socket_repository.dart';
-import 'package:ztc/src/data/socket_repository_provider.dart';
+import 'package:ztc/src/data/bytes_converter.dart';
+import 'package:ztc/src/data/bytes_converter_provider.dart';
+import 'package:ztc/src/data/log_data_store.dart';
+import 'package:ztc/src/data/log_data_store_provider.dart';
+import 'package:ztc/src/data/socket_data_store.dart';
+import 'package:ztc/src/data/socket_data_store_provider.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
-import 'package:ztc/src/data/log_manager_provider.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
 class ConnectionServiceNotifier extends StateNotifier<SocketState> {
-  final BytesManager bytesManager;
+  final BytesConverted bytesConverter;
   final AuthService authService;
-  final LogManager logManager;
+  final LogDataStore logManager;
   final AuthTokenDataStore authTokenDataStore;
-  final SocketRepository socketRepository;
+  final SocketDataStore socketRepository;
 
-  ConnectionServiceNotifier(this.bytesManager, this.authService,
+  ConnectionServiceNotifier(this.bytesConverter, this.authService,
       this.logManager, this.authTokenDataStore, this.socketRepository)
       : super(const SocketDisconnected());
 
@@ -131,13 +131,13 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
 final connectionServiceNotifierProvider =
     StateNotifierProvider<ConnectionServiceNotifier, SocketState>((ref) {
-  final bytesManager = ref.read(bytesManagerProvider);
+  final bytesConverter = ref.read(bytesConvertedProvider);
   final AuthService client = ref.read(authServiceProvider);
-  final logManager = ref.read(logManagerProvider);
-  final SocketRepository socketRepository = ref.read(socketRepositoryProvider);
+  final logManager = ref.read(logDataStoreProvider);
+  final SocketDataStore socketRepository = ref.read(socketDataStoreProvider);
   final AuthTokenDataStore authTokenDS = ref.read(authTokenProvider);
   return ConnectionServiceNotifier(
-    bytesManager,
+    bytesConverter,
     client,
     logManager,
     authTokenDS,

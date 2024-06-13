@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-abstract class BytesManager {
+abstract class BytesConverted {
   Future<Map<String, dynamic>> readBytes(Socket socket);
 }
 
-BytesManager buildBytesManager() {
-  return _BytesManagerImpl();
+BytesConverted buildBytesConverted() {
+  return _BytesConvertedImpl();
 }
 
-class _BytesManagerImpl implements BytesManager {
+class _BytesConvertedImpl implements BytesConverted {
   @override
   Future<Map<String, dynamic>> readBytes(Socket socket) async {
     final completer = Completer<Map<String, dynamic>>();

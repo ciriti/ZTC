@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:ztc/src/data/bytes_manager.dart';
+import 'package:ztc/src/data/bytes_converter.dart';
 import 'package:ztc/src/utils/ext.dart';
 
-class SocketRepository {
-  final BytesManager bytesManager;
+class SocketDataStore {
+  final BytesConverted bytesConverter;
 
-  SocketRepository(this.bytesManager);
+  SocketDataStore(this.bytesConverter);
 
   Future<Map<String, dynamic>> sendRequest(
       Map<String, dynamic> requestPayload) async {
@@ -23,7 +23,7 @@ class SocketRepository {
       socket.add(payloadBytes);
 
       // Read the response size
-      final jsonResponse = await bytesManager.readBytes(socket);
+      final jsonResponse = await bytesConverter.readBytes(socket);
       print('Received response: $jsonResponse');
 
       return jsonResponse;
