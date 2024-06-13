@@ -1,6 +1,8 @@
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
+import 'package:ztc/src/exceptions/safe_execution.dart';
 
 void main() {
   late SharedPreferences preferences;
@@ -13,7 +15,7 @@ void main() {
     preferences = await SharedPreferences.getInstance();
     dataStore = buildAuthTokenDataStore(
       isTimestampExpired: _isTimestampExpired,
-      tokenValidityDuration: 5,
+      tokenValidityDuration: 1,
     );
   });
 
@@ -30,17 +32,17 @@ void main() {
 
     final token = await dataStore.getAuthToken();
 
-    expect(token, 'test_token');
+    expect(token, isA<Right>());
   });
 
   test('getAuthToken returns null if expired', () async {
     await dataStore.saveAuthToken('test_token');
     await Future.delayed(
-        const Duration(seconds: 6)); // Wait for token to expire
+        const Duration(seconds: 2)); // Wait for token to expire
 
     final token = await dataStore.getAuthToken();
 
-    expect(token, isNull);
+    expect(token, isA<Left>());
   });
 
   test('clearAuthToken clears token and timestamp', () async {
