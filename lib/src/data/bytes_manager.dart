@@ -29,7 +29,7 @@ class _BytesManagerImpl implements BytesManager {
         String jsonString = utf8.decode(jsonPayloadBytes);
         Map<String, dynamic> json = jsonDecode(jsonString);
 
-        print(json);
+        print('BytesManager: $json');
 
         completer.complete(json);
       },

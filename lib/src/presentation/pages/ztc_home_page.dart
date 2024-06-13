@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:ztc/src/data/daemon_connection_notifier.dart';
+import 'package:ztc/src/data/log_manager_provider.dart';
 import 'package:ztc/src/data/socket_state.dart';
 import '../../utils/app_sizes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,21 +15,13 @@ class ZTCHomePage extends ConsumerStatefulWidget {
 }
 
 class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
-  final List<String> _log = [];
   Timer? _timer;
 
   void _connect() async {
-    setState(() {
-      _log.add('Attempting to connect...');
-    });
-
     ref.read(daemonConnectionProvider.notifier).connect();
   }
 
   void _disconnect() async {
-    setState(() {
-      _log.add('Attempting to disconnect...');
-    });
     // Disconnect from the socket
     ref.read(daemonConnectionProvider.notifier).disconnect();
   }
@@ -54,7 +47,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   @override
   Widget build(BuildContext context) {
     final socketState = ref.watch(daemonConnectionProvider);
-    _addLog(socketState, _log);
+    final log = ref.watch(logManagerProvider).log;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,19 +62,11 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
             gapH20,
             Buttons(onConnect: _connect, onDisconnect: _disconnect),
             gapH20,
-            Logs(log: _log),
+            Logs(log: log),
           ],
         ),
       ),
     );
-  }
-
-  void _addLog(SocketState socketState, List<String> log) {
-    if (socketState is SocketConnected ||
-        socketState is SocketDisconnected ||
-        socketState is SocketError) {
-      log.add(socketState.toString());
-    }
   }
 
   String _getStatus(SocketState socketState) {

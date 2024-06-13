@@ -1,10 +1,11 @@
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ztc/src/exceptions/safe_execution.dart';
 
 abstract class AuthTokenDataStore {
   static const String keyAuthToken = 'auth_token';
   static const String keyTokenTimestamp = 'token_timestamp';
   Future<void> saveAuthToken(String token);
-  Future<String?> getAuthToken();
+  Future<ResultFuture<String>> getAuthToken();
   Future<void> clearAuthToken();
 }
 
@@ -35,17 +36,23 @@ class _AuthTokenDataStore implements AuthTokenDataStore {
   }
 
   @override
-  Future<String?> getAuthToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    final timestamp = prefs.getInt(AuthTokenDataStore.keyTokenTimestamp);
-    if (timestamp == null) {
-      return null;
-    }
-    if (isTimestampExpired(timestamp, _tokenValidityDuration)) {
-      await clearAuthToken();
-      return null;
-    }
-    return prefs.getString(AuthTokenDataStore.keyAuthToken);
+  Future<ResultFuture<String>> getAuthToken() async {
+    return await safeExecute(() async {
+      final prefs = await SharedPreferences.getInstance();
+      final timestamp = prefs.getInt(AuthTokenDataStore.keyTokenTimestamp);
+      if (timestamp == null) {
+        throw Exception('Token timestamp not found');
+      }
+      if (isTimestampExpired(timestamp, _tokenValidityDuration)) {
+        await clearAuthToken();
+        throw Exception('Token expired');
+      }
+      final token = prefs.getString(AuthTokenDataStore.keyAuthToken);
+      if (token == null) {
+        throw Exception('Auth token not found');
+      }
+      return token;
+    });
   }
 
   @override
