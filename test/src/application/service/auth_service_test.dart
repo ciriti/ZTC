@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
-// Create a Mock class for Dio
 class MockDio extends Mock implements Dio {}
 
 void main() {
@@ -54,6 +53,7 @@ void main() {
     });
 
     test('throws exception on unsuccessful response', () async {
+      // Arrange
       final response = Response(
         requestOptions: RequestOptions(path: baseUrl),
         statusCode: 400,
@@ -68,8 +68,10 @@ void main() {
             options: any(named: 'options'),
           )).thenAnswer((_) async => response);
 
+      // Act
       final result = await authService.getAuthToken();
 
+      // Assert
       result.fold(
         (failure) {
           expect(failure, isA<Failure>());
