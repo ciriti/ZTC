@@ -6,20 +6,20 @@ part of 'bytes_converter_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$bytesConvertedHash() => r'61aff667c8c14a1f947d2447230ce55a668917cb';
+String _$bytesConverterHash() => r'9920ea6f4a8019c0e5bdd4e0a82c8d5437edd724';
 
-/// See also [bytesConverted].
-@ProviderFor(bytesConverted)
-final bytesConvertedProvider = AutoDisposeProvider<BytesConverted>.internal(
-  bytesConverted,
-  name: r'bytesConvertedProvider',
+/// See also [bytesConverter].
+@ProviderFor(bytesConverter)
+final bytesConverterProvider = AutoDisposeProvider<BytesConverter>.internal(
+  bytesConverter,
+  name: r'bytesConverterProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$bytesConvertedHash,
+      : _$bytesConverterHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef BytesConvertedRef = AutoDisposeProviderRef<BytesConverted>;
+typedef BytesConverterRef = AutoDisposeProviderRef<BytesConverter>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

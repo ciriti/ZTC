@@ -7,7 +7,7 @@ import 'package:ztc/src/data/bytes_converter.dart';
 import 'package:ztc/src/utils/ext.dart';
 
 class SocketDataStore {
-  final BytesConverted bytesConverter;
+  final BytesConverter bytesConverter;
 
   SocketDataStore(this.bytesConverter);
 

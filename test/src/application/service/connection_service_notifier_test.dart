@@ -12,7 +12,7 @@ import 'package:ztc/src/data/socket_data_store.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 
 // Mock classes
-class MockBytesManager extends Mock implements BytesConverted {}
+class MockBytesManager extends Mock implements BytesConverter {}
 
 class MockAuthService extends Mock implements AuthService {}
 

@@ -6,6 +6,6 @@ part 'socket_data_store_provider.g.dart';
 
 @riverpod
 SocketDataStore socketDataStore(SocketDataStoreRef ref) {
-  final bytesConverter = ref.read(bytesConvertedProvider);
+  final bytesConverter = ref.read(bytesConverterProvider);
   return SocketDataStore(bytesConverter);
 }

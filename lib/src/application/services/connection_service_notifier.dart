@@ -14,7 +14,7 @@ import 'package:ztc/src/domain/models/socket_state.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
 class ConnectionServiceNotifier extends StateNotifier<SocketState> {
-  final BytesConverted bytesConverter;
+  final BytesConverter bytesConverter;
   final AuthService authService;
   final LogDataStore logManager;
   final AuthTokenDataStore authTokenDataStore;
@@ -131,7 +131,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
 final connectionServiceNotifierProvider =
     StateNotifierProvider<ConnectionServiceNotifier, SocketState>((ref) {
-  final bytesConverter = ref.read(bytesConvertedProvider);
+  final bytesConverter = ref.read(bytesConverterProvider);
   final AuthService client = ref.read(authServiceProvider);
   final logManager = ref.read(logDataStoreProvider);
   final SocketDataStore socketRepository = ref.read(socketDataStoreProvider);
