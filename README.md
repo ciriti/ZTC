@@ -1,3 +1,5 @@
+[![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/test.yml)
+
 # ztc
 
 A new Flutter project.
