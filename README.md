@@ -1,4 +1,4 @@
-[![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/test.yml)
+[![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/ci.yml)
 
 # ztc
 
