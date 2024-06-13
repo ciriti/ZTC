@@ -3,25 +3,26 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
+import 'package:ztc/src/application/services/auth_service.dart';
+import 'package:ztc/src/application/services/auth_service_provider.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
 import 'package:ztc/src/data/auth_token_data_store_provider.dart';
 import 'package:ztc/src/data/bytes_manager.dart';
 import 'package:ztc/src/data/bytes_manager_provider.dart';
 import 'package:ztc/src/data/log_manager.dart';
-import 'package:ztc/src/data/socket_state.dart';
-import 'package:ztc/src/data/auth_service.dart';
+import 'package:ztc/src/domain/models/socket_state.dart';
 import 'package:ztc/src/utils/ext.dart';
 import 'package:ztc/src/data/log_manager_provider.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
-class DaemonConnectionNotifier extends StateNotifier<SocketState> {
+class ConnectionServiceNotifier extends StateNotifier<SocketState> {
   final BytesManager bytesManager;
   final AuthService authService;
   final LogManager logManager;
   final AuthTokenDataStore authTokenDataStore;
 
-  DaemonConnectionNotifier(this.bytesManager, this.authService, this.logManager,
-      this.authTokenDataStore)
+  ConnectionServiceNotifier(this.bytesManager, this.authService,
+      this.logManager, this.authTokenDataStore)
       : super(const SocketDisconnected());
 
   Future<void> connect() async {
@@ -160,12 +161,12 @@ class DaemonConnectionNotifier extends StateNotifier<SocketState> {
   }
 }
 
-final daemonConnectionProvider =
-    StateNotifierProvider<DaemonConnectionNotifier, SocketState>((ref) {
+final connectionServiceNotifierProvider =
+    StateNotifierProvider<ConnectionServiceNotifier, SocketState>((ref) {
   final bytesManager = ref.read(bytesManagerProvider);
   final AuthService client = ref.read(authServiceProvider);
   final logManager = ref.read(logManagerProvider);
   final AuthTokenDataStore authTokenDS = ref.read(authTokenProvider);
-  return DaemonConnectionNotifier(
+  return ConnectionServiceNotifier(
       bytesManager, client, logManager, authTokenDS);
 });

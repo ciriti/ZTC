@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ztc/src/data/daemon_connection_notifier.dart';
+import 'package:ztc/src/application/services/connection_service_notifier.dart';
+import 'package:ztc/src/application/services/timer_manager_provider.dart';
 import 'package:ztc/src/data/log_manager_provider.dart';
-import 'package:ztc/src/data/socket_state.dart';
-import 'package:ztc/src/data/timer_manager_provider.dart';
+import 'package:ztc/src/domain/models/socket_state.dart';
 import '../../utils/app_sizes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,12 +15,12 @@ class ZTCHomePage extends ConsumerStatefulWidget {
 
 class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   void _connect() async {
-    ref.read(daemonConnectionProvider.notifier).connect();
+    ref.read(connectionServiceNotifierProvider.notifier).connect();
   }
 
   void _disconnect() async {
     // Disconnect from the socket
-    ref.read(daemonConnectionProvider.notifier).disconnect();
+    ref.read(connectionServiceNotifierProvider.notifier).disconnect();
   }
 
   @override
@@ -28,7 +28,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
     super.initState();
     final timerManager = ref.read(timerManagerProvider);
     timerManager.startLogging(() {
-      ref.read(daemonConnectionProvider.notifier).getStatus();
+      ref.read(connectionServiceNotifierProvider.notifier).getStatus();
       setState(() {});
     });
   }
@@ -40,7 +40,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final socketState = ref.watch(daemonConnectionProvider);
+    final socketState = ref.watch(connectionServiceNotifierProvider);
     final log = ref.watch(logManagerProvider).log;
 
     return Scaffold(

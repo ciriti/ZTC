@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 import 'package:dio/dio.dart';
 
@@ -9,6 +8,15 @@ abstract class AuthService {
 class ApiConstants {
   static const String statusSuccess = 'success';
   static const String headerAuthKey = 'X-Auth-Key';
+}
+
+AuthService authServiceFactory() {
+  return _AuthServiceImpl(
+    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
+    authKey:
+        '3735928559', // TODO hide the authKey using the .env plugin https://pub.dev/packages/flutter_dotenv
+    dio: Dio(),
+  );
 }
 
 class _AuthServiceImpl implements AuthService {
@@ -37,11 +45,3 @@ class _AuthServiceImpl implements AuthService {
     });
   }
 }
-
-final authServiceProvider = Provider<AuthService>((ref) {
-  return _AuthServiceImpl(
-    baseUrl: 'https://warp-registration.warpdir2792.workers.dev/',
-    authKey: '3735928559',
-    dio: Dio(),
-  );
-});

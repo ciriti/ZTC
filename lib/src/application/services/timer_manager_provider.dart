@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:ztc/src/data/timer_manager.dart';
+import 'package:ztc/src/application/services/timer_manager.dart';
 
 part 'timer_manager_provider.g.dart';
 
