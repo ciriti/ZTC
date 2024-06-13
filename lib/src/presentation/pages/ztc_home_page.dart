@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:ztc/src/data/daemon_connection_notifier.dart';
 import 'package:ztc/src/data/log_manager_provider.dart';
