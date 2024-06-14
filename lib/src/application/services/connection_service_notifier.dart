@@ -12,6 +12,7 @@ import 'package:ztc/src/data/log_data_store.dart';
 import 'package:ztc/src/data/log_data_store_provider.dart';
 import 'package:ztc/src/data/socket_data_store.dart';
 import 'package:ztc/src/data/socket_data_store_provider.dart';
+import 'package:ztc/src/domain/models/socket_response.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
@@ -28,9 +29,9 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
   Future<void> connectSocket() async {
     await socketDataStore.connectSocket(
-      _handleAuthToken,
+      _handleAuthToken2,
       (error) {
-        state = const SocketError('Error occurred during data transmission');
+        state = SocketError('Error occurred during data transmission');
         logManager.addLog('Error occurred during data transmission');
       },
     );
@@ -50,7 +51,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
         tokenResult.fold(
           (failure) {
-            state = const SocketError('Failed to fetch the Auth token');
+            state = SocketError('Failed to fetch the Auth token');
             logManager.addLog('Failed to fetch the Auth token');
           },
           (authToken) async {
@@ -77,31 +78,70 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     );
   }
 
-  Future<void> _handleAuthToken(String jsonString) async {
-    try {
-      final result = jsonDecode(jsonString);
+  // Future<void> _handleAuthToken(String jsonString) async {
+  //   try {
+  //     final result = jsonDecode(jsonString);
 
-      if (result['data']['daemon_status'] == 'connected') {
-        state = const SocketConnected();
-        logManager.addLog(const SocketConnected().toString());
-        // after a successful connection from the daemon,
-        //the app MUST discard the cached registration token
-        await authTokenDataStore.clearAuthToken();
-      } else if (result['data']['daemon_status'] == 'disconnected') {
-        state = const SocketDisconnected();
-        logManager.addLog(const SocketDisconnected().toString());
-      } else if (result['data']['daemon_status'] == 'connected') {
-        state = const SocketConnected();
-        logManager.addLog('Status: Connected [$result]');
-      } else if (result['data']['daemon_status'] == 'disconnected') {
-        state = const SocketDisconnected();
-        logManager.addLog('Status: Disconnected [$result]');
+  //     if (result['data']['daemon_status'] == 'connected') {
+  //       state = const SocketConnected();
+  //       logManager.addLog(const SocketConnected().toString());
+  //       // after a successful connection from the daemon,
+  //       //the app MUST discard the cached registration token
+  //       await authTokenDataStore.clearAuthToken();
+  //     } else if (result['data']['daemon_status'] == 'disconnected') {
+  //       state = const SocketDisconnected();
+  //       logManager.addLog(const SocketDisconnected().toString());
+  //     } else if (result['data']['daemon_status'] == 'connected') {
+  //       state = const SocketConnected();
+  //       logManager.addLog('Status: Connected [$result]');
+  //     } else if (result['status'] == 'error') {
+  //       state = const SocketDisconnected();
+  //       logManager.addLog('Status: Disconnected [$result]');
+  //     } else {
+  //       state = SocketError('Failed to connect');
+  //       logManager.addLog('Failed to connect');
+  //     }
+  //   } catch (e) {
+  //     state = SocketError("Error");
+  //     logManager.addLog("Error ${e.toString()}");
+  //   }
+  // }
+
+  Future<void> _handleAuthToken2(String jsonString) async {
+    try {
+      final result = SocketResponse.fromJson(jsonDecode(jsonString));
+
+      if (result.status == 'success' && result.data != null) {
+        switch (result.data!.daemonStatus) {
+          case 'connected':
+            state = const SocketConnected();
+            logManager.addLog(const SocketConnected().toString());
+            // after a successful connection from the daemon,
+            // the app MUST discard the cached registration token
+            await authTokenDataStore.clearAuthToken();
+            break;
+          case 'disconnected':
+            state = const SocketDisconnected();
+            final mess = result.data?.message;
+            logManager.addLog(
+                '${const SocketDisconnected().toString()}${mess != null ? "; $mess" : ""}');
+
+            break;
+          default:
+            state = SocketError('Unknown daemon status');
+            logManager
+                .addLog('Unknown daemon status: ${result.data!.daemonStatus}');
+            break;
+        }
+      } else if (result.status == 'error') {
+        state = SocketError(result.message ?? 'Unknown error');
+        logManager.addLog('Error: ${result.message ?? 'Unknown error'}');
       } else {
-        state = const SocketError('Failed to connect');
+        state = SocketError('Failed to connect');
         logManager.addLog('Failed to connect');
       }
     } catch (e) {
-      state = const SocketError("Error");
+      state = SocketError("Error");
       logManager.addLog("Error ${e.toString()}");
     }
   }
@@ -113,7 +153,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     try {
       await socketDataStore.sendRequest({"request": "disconnect"});
     } catch (e) {
-      state = const SocketError("Error");
+      state = SocketError("Error");
       logManager.addLog("Error ${e.toString()}");
     }
   }
