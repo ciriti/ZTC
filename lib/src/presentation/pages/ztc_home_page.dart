@@ -29,7 +29,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
     ref.read(connectionServiceNotifierProvider.notifier).connectSocket();
     final timerManager = ref.read(timerManagerProvider);
     timerManager.startLogging(() {
-      // ref.read(connectionServiceNotifierProvider.notifier).getStatus();
+      ref.read(connectionServiceNotifierProvider.notifier).getStatus();
       setState(() {});
     });
   }
