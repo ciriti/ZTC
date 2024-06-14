@@ -25,6 +25,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
       : super(const SocketDisconnected());
 
   Future<void> connect() async {
+    await socketRepository.connectSocket();
     logManager.addLog('Daemon: Attempting to connect...');
     state = const SocketConnecting();
 
