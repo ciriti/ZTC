@@ -26,6 +26,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   @override
   void initState() {
     super.initState();
+    ref.read(connectionServiceNotifierProvider.notifier).connectSocket();
     final timerManager = ref.read(timerManagerProvider);
     timerManager.startLogging(() {
       // ref.read(connectionServiceNotifierProvider.notifier).getStatus();

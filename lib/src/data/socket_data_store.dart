@@ -12,7 +12,7 @@ class SocketDataStore {
 
   SocketDataStore(this.bytesConverter);
 
-  Future<void> connectSocket() async {
+  Future<void> connectSocket(Function(String) lambda) async {
     var tempDir = await getTemporaryDirectory();
     String socketPath = "${tempDir.path}/daemon-lite";
     _socket = await Socket.connect(
@@ -34,6 +34,8 @@ class SocketDataStore {
         Map<String, dynamic> json = jsonDecode(jsonString);
 
         print('BytesManager: $json');
+
+        lambda(jsonString);
 
         // completer.complete(json);
       },

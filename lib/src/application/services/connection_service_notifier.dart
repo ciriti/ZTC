@@ -24,8 +24,11 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
       this.logManager, this.authTokenDataStore, this.socketRepository)
       : super(const SocketDisconnected());
 
+  Future<void> connectSocket() async {
+    await socketRepository.connectSocket(_handleAuthToken);
+  }
+
   Future<void> connect() async {
-    await socketRepository.connectSocket();
     logManager.addLog('Daemon: Attempting to connect...');
     state = const SocketConnecting();
 
@@ -43,13 +46,23 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
             logManager.addLog('Failed to fetch the Auth token');
           },
           (authToken) async {
-            await _handleAuthToken(authToken);
+            // await _handleAuthToken(authToken);
+            await socketRepository.sendRequest({
+              "request": {
+                "connect": int.parse(authToken),
+              }
+            });
           },
         );
       },
       (cachedToken) async {
         // Valid cached token exists, use it
-        await _handleAuthToken(cachedToken);
+        // await _handleAuthToken(cachedToken);
+        await socketRepository.sendRequest({
+          "request": {
+            "connect": int.parse(cachedToken),
+          }
+        });
       },
     );
   }
