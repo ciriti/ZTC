@@ -31,6 +31,15 @@ class ApiFailure extends Failure {
   });
 }
 
+class GenericFailure extends Failure {
+  const GenericFailure({
+    required super.message,
+    super.code,
+    super.exception,
+    super.error,
+  });
+}
+
 typedef ResultFuture<T> = Either<Failure, T>;
 
 Future<ResultFuture<T>> safeExecute<T>(
@@ -40,8 +49,8 @@ Future<ResultFuture<T>> safeExecute<T>(
     final result = await expression();
     return Right(result);
   } on Exception catch (e) {
-    return Left(ApiFailure(exception: e, message: e.toString()));
+    return left(ApiFailure(exception: e, message: e.toString()));
   } catch (e) {
-    return Left(ApiFailure(message: e.toString(), error: e));
+    return left(ApiFailure(message: e.toString(), error: e));
   }
 }

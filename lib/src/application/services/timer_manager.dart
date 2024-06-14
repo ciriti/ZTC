@@ -7,6 +7,7 @@ class TimerManager {
   TimerManager({required this.duration});
 
   void startLogging(void Function() callback) {
+    callback();
     _timer = Timer.periodic(Duration(seconds: duration), (timer) {
       callback();
     });
