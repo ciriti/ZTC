@@ -78,35 +78,6 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     );
   }
 
-  // Future<void> _handleAuthToken(String jsonString) async {
-  //   try {
-  //     final result = jsonDecode(jsonString);
-
-  //     if (result['data']['daemon_status'] == 'connected') {
-  //       state = const SocketConnected();
-  //       logManager.addLog(const SocketConnected().toString());
-  //       // after a successful connection from the daemon,
-  //       //the app MUST discard the cached registration token
-  //       await authTokenDataStore.clearAuthToken();
-  //     } else if (result['data']['daemon_status'] == 'disconnected') {
-  //       state = const SocketDisconnected();
-  //       logManager.addLog(const SocketDisconnected().toString());
-  //     } else if (result['data']['daemon_status'] == 'connected') {
-  //       state = const SocketConnected();
-  //       logManager.addLog('Status: Connected [$result]');
-  //     } else if (result['status'] == 'error') {
-  //       state = const SocketDisconnected();
-  //       logManager.addLog('Status: Disconnected [$result]');
-  //     } else {
-  //       state = SocketError('Failed to connect');
-  //       logManager.addLog('Failed to connect');
-  //     }
-  //   } catch (e) {
-  //     state = SocketError("Error");
-  //     logManager.addLog("Error ${e.toString()}");
-  //   }
-  // }
-
   Future<void> _handleAuthToken2(String jsonString) async {
     try {
       final result = SocketResponse.fromJson(jsonDecode(jsonString));
