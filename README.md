@@ -107,7 +107,7 @@ flutter test ui_test
 
 ## Dependencies
 
-- `dartz`: A functional programming library for Dart that provides types and functions for handling operations like Either, [link]((https://pub.dev/packages/dartz)).
+- `dartz`: A functional programming library for Dart that provides types and functions for handling operations like Either, [link](https://pub.dev/packages/dartz).
 - `dio`: An HTTP client for Dart that supports.
 - `equatable`: A Dart package that helps to implement equality without needing to override '==' and 'hashCode' manually.
 - `flutter_riverpod`: .
