@@ -153,13 +153,6 @@ Ensure the daemon is running, then start the Flutter application.
 flutter run -d macos
 ```
 
-During initialization, the application will print the directory to use for the daemon-lite:
-
-```dart
-var tempDir = await getTemporaryDirectory();
-print('Please use this directory for the daemon-lite[$tempDir]');
-```
-
 ## Testing
 
 To run unit tests:
