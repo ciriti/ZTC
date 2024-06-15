@@ -30,6 +30,36 @@ class MockSocketRepository extends Mock implements SocketDataStore {}
 
 class MockTimerManager extends Mock implements TimerManager {}
 
+class MockSocketDataStore extends Mock implements SocketDataStore {
+  late Function(String) success;
+  late Function(String) failure;
+  final String json;
+
+  // Empty constructor with default json value
+  MockSocketDataStore()
+      : json = '{"status":"success","data":{"daemon_status":"connected"}}';
+
+  // Named factory constructor
+  factory MockSocketDataStore.withJson(String json) {
+    return MockSocketDataStore._internal(json: json);
+  }
+
+  MockSocketDataStore._internal({required this.json});
+
+  @override
+  Future<void> connectSocket(
+      Function(String) success, Function(String) failure) async {
+    this.success = success;
+    this.failure = failure;
+  }
+
+  @override
+  Future<void> sendRequest(Map<String, dynamic> requestPayload) async {
+    success(json);
+    return Future.value();
+  }
+}
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -39,6 +69,7 @@ void main() {
   final mockLogManager = MockLogManager();
   final mockSocketRepository = MockSocketRepository();
   final mockTimerManager = MockTimerManager();
+  final mockSocketDataStore = MockSocketDataStore();
 
   testWidgets('ZTCHomePage UI Test with mocked dependencies',
       (WidgetTester tester) async {
@@ -47,6 +78,8 @@ void main() {
         .thenAnswer((_) async => const Right("1234"));
     when(() => mockAuthTokenDataStore.clearAuthToken())
         .thenAnswer((_) async => Void);
+    when(() => mockAuthTokenDataStore.saveAuthToken(any()))
+        .thenAnswer((_) async {});
     when(() => mockAuthService.getAuthToken())
         .thenAnswer((_) async => const Right("1234"));
     when(() => mockSocketRepository.sendRequest(any())).thenAnswer((_) async =>
@@ -61,6 +94,7 @@ void main() {
           logDataStoreProvider.overrideWithValue(mockLogManager),
           socketDataStoreProvider.overrideWithValue(mockSocketRepository),
           timerManagerProvider.overrideWithValue(mockTimerManager),
+          socketDataStoreProvider.overrideWithValue(mockSocketDataStore),
           connectionServiceNotifierProvider.overrideWith((ref) {
             return ConnectionServiceNotifier(
               ref.read(authServiceProvider),

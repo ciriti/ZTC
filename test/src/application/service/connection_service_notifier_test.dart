@@ -22,7 +22,8 @@ class MockSocketDataStore extends Mock implements SocketDataStore {
   final String json;
 
   // Empty constructor with default json value
-  MockSocketDataStore() : json = '';
+  MockSocketDataStore()
+      : json = '{"status":"success","data":{"daemon_status":"connected"}}';
 
   // Named factory constructor
   factory MockSocketDataStore.withJson(String json) {
