@@ -1,4 +1,4 @@
-class LogManager {
+class LogDataStore {
   final List<String> _log = [];
 
   void addLog(String message) {

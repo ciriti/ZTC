@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
-import 'package:ztc/src/exceptions/safe_execution.dart';
 
 void main() {
   late SharedPreferences preferences;

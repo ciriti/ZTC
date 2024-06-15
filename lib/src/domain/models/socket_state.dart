@@ -39,7 +39,7 @@ final class SocketDisconnected extends SocketState {
 
 final class SocketError extends SocketState {
   final String message;
-  const SocketError(this.message);
+  SocketError(this.message);
 
   @override
   String toString() => 'Error(message: $message)';

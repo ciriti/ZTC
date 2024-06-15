@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ztc/src/application/services/connection_service_notifier.dart';
 import 'package:ztc/src/application/services/timer_manager_provider.dart';
-import 'package:ztc/src/data/log_manager_provider.dart';
+import 'package:ztc/src/data/log_data_store_provider.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 import '../../utils/app_sizes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +26,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   @override
   void initState() {
     super.initState();
+    ref.read(connectionServiceNotifierProvider.notifier).connectSocket();
     final timerManager = ref.read(timerManagerProvider);
     timerManager.startLogging(() {
       ref.read(connectionServiceNotifierProvider.notifier).getStatus();
@@ -41,7 +42,7 @@ class ZTCHomePageState extends ConsumerState<ZTCHomePage> {
   @override
   Widget build(BuildContext context) {
     final socketState = ref.watch(connectionServiceNotifierProvider);
-    final log = ref.watch(logManagerProvider).log;
+    final log = ref.watch(logDataStoreProvider).log;
 
     return Scaffold(
       appBar: AppBar(
