@@ -108,21 +108,23 @@ flutter test ui_test
 ## Dependencies
 
 - `dartz`: A functional programming library for Dart that provides types and functions for handling operations like Either, [link](https://pub.dev/packages/dartz).
-- `dio`: An HTTP client for Dart that supports.
-- `equatable`: A Dart package that helps to implement equality without needing to override '==' and 'hashCode' manually.
-- `flutter_riverpod`: .
-- `freezed_annotation`: Annotations for the Freezed package, which helps to generate data classes in Dart.
-- `json_serializable`: A code generator for JSON serialization that generates code for encoding and decoding JSON directly from your Dart classes.
-- `json_annotation`: Supports JSON serialization and deserialization in Dart. Used in conjunction with json_serializable.
-- `path_provider`: A Flutter plugin for finding commonly used locations on the filesystem, such as the temp and app data directories.
-- `shared_preferences`: A Flutter plugin for storing simple data in a key-value format on the device.
-- `riverpod_annotation`: Annotations for Riverpod to generate providers and simplify dependency injection.
-- `mocktail`: A Dart package that simplifies creating mocks and stubs in tests, particularly for unit testing.
-- `build_runner`: A tool to generate files using Dart code generators.
-- `custom_lint`: A plugin to create custom lint rules for Dart and Flutter projects.
-- `riverpod_generator`: A code generator for Riverpod to automate the creation of providers.
-- `riverpod_lint`: A set of lint rules to improve the use of Riverpod in Dart and Flutter projects.
-- `freezed`: A code generator for pattern-matching/copy in Dart.
+- `dio`: An HTTP client for Dart that supports, [link](https://pub.dev/packages/dio).
+- `equatable`: A Dart package that helps to implement equality without needing to override '==' and 'hashCode' manually, [link](https://pub.dev/packages/equatable).
+- `flutter_riverpod`: A reactive caching and data-binding framework that simplifies the state management in Flutter applications, [link](https://pub.dev/packages/flutter_riverpod).
+- `freezed_annotation`: Annotations for the Freezed package, which helps to generate data classes in Dart, [link](https://pub.dev/packages/freezed_annotation).
+- `json_serializable`: A code generator for JSON serialization that generates code for encoding and decoding JSON directly from your Dart classes, [link](https://pub.dev/packages/json_serializable).
+- `json_annotation`: Supports JSON serialization and deserialization in Dart. Used in conjunction with json_serializable, [link](https://pub.dev/packages/json_annotation).
+- `path_provider`: A Flutter plugin for finding commonly used locations on the filesystem, such as the temp and app data directories, [link](https://pub.dev/packages/path_provider).
+- `shared_preferences`: A Flutter plugin for storing simple data in a key-value format on the device, [link](https://pub.dev/packages/shared_preferences).
+- `riverpod_annotation`: Annotations for Riverpod to generate providers and simplify dependency injection, [link](https://pub.dev/packages/riverpod_annotation).
+- `mocktail`: A Dart package that simplifies creating mocks and stubs in tests, particularly for unit testing, [link](https://pub.dev/packages/mocktail).
+- `build_runner`: A tool to generate files using Dart code generators, [link](https://pub.dev/packages/build_runner).
+- `custom_lint`: A plugin to create custom lint rules for Dart and Flutter projects, [link](https://pub.dev/packages/custom_lint).
+- `riverpod_generator`: A code generator for Riverpod to automate the creation of providers, [link](https://pub.dev/packages/riverpod_generator).
+- `riverpod_lint`: A set of lint rules to improve the use of Riverpod in Dart and Flutter projects, [link](https://pub.dev/packages/riverpod_lint).
+- `freezed`: A code generator for pattern-matching/copy in Dart, [link](https://pub.dev/packages/freezed).
+
+
 
 ## Error Handling
 
