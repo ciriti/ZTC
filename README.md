@@ -111,7 +111,6 @@ Directory structure:
 ### Prerequisites
 
 - Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
-- Dart SDK: Included with Flutter
 
 ### Clone the Repository
 
