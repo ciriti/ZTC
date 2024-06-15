@@ -26,7 +26,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
   Future<void> connectSocket() async {
     await socketDataStore.connectSocket(
-      _handleAuthToken2,
+      _handleAuthToken,
       (error) {
         state = SocketError('Error occurred during data transmission');
         logManager.addLog('Error occurred during data transmission');
@@ -71,12 +71,11 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
             "connect": int.parse(cachedToken),
           }
         });
-        print("object");
       },
     );
   }
 
-  Future<void> _handleAuthToken2(String jsonString) async {
+  Future<void> _handleAuthToken(String jsonString) async {
     try {
       final result = SocketResponse.fromJson(jsonDecode(jsonString));
 
