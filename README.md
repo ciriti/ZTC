@@ -1,4 +1,5 @@
 [![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/ci.yml)
+[![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/ci-it.yml)
 
 
 # ZT Client
