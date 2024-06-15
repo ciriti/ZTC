@@ -5,7 +5,7 @@
 
 ## Introduction
 
-ZT Client is a simplified GUI application that represents a VPN app. The app interacts with a mock registration API and a provided mock networking daemon/service to manage VPN connections. The application is built using Flutter and demonstrates how to establish a connection, disconnect, and check the status of the VPN connection.
+ZT Client is a simplified GUI application that represents a VPN app. The app interacts with a mock registration API and a provided mock networking daemon/service to manage VPN connections. The application demonstrates how to establish a connection, disconnect, and check the status of the VPN connection.
 
 ## Table of Contents
 
@@ -17,15 +17,13 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 - [Testing](#testing)
 - [Dependencies](#dependencies)
 - [Error Handling](#error-handling)
-- [Additional Features](#additional-features)
-- [Contact](#contact)
 
 ## Features
 
-- Connect to a VPN using a mock registration API.
+- Connect to a mock daemon after contact the registration API.
 - Disconnect from the VPN.
-- Display the current status of the VPN connection.
-- Periodically check the status of the VPN daemon.
+- Display the current status of the connection.
+- Periodically check the status of the daemon.
 - Cache the authentication token for up to 5 minutes.
 
 ## Architecture
@@ -44,7 +42,6 @@ The application is structured as follows:
 
 - Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
 - Dart SDK: Included with Flutter
-- Rust and Cargo: Only needed if you want to compile the daemon from the source. [Install Rust](https://www.rust-lang.org/tools/install)
 
 ### Clone the Repository
 
@@ -59,31 +56,32 @@ cd ZTC
 flutter pub get
 ```
 
-### Mock Daemon
 
-Download the mock daemon from the provided link in the instructions. If you prefer to compile it yourself, follow the instructions below.
+### Mock Daemon - Important Note
 
-```sh
-# Navigate to the daemon source directory
-cd path/to/daemon/source
-cargo build --release
-# The binary will be located at target/release/daemon-lite
+Replace the original path:
+
+```python
+SOCKET_PATH = "/tmp/daemon-lite"
 ```
 
-### Running the Daemon
+with the one printed during initialization:
 
-Start the daemon before running the application. This can be done in a separate terminal window.
-
-```sh
-./path/to/daemon-lite
+```dart
+// lib/main.dart:10
+var tempDir = await getTemporaryDirectory();
+print('Please use this directory for the daemon-lite[$tempDir]');
 ```
+
+and then run it.
+
 
 ## Running the Application
 
 Ensure the daemon is running, then start the Flutter application.
 
 ```sh
-flutter run
+flutter run -d macos
 ```
 
 During initialization, the application will print the directory to use for the daemon-lite:
@@ -101,35 +99,31 @@ To run unit tests:
 flutter test
 ```
 
-Make sure all tests pass successfully.
+For integration:
+
+```sh
+flutter test ui_test
+```
 
 ## Dependencies
 
-- `dartz`
-- `dio`
-- `equatable`
-- `flutter`
-- `flutter_riverpod`
-- `freezed_annotation`
-- `json_annotation`
-- `path_provider`
-- `shared_preferences`
-- `riverpod_annotation`
-- `mocktail`
-
-Refer to `pubspec.yaml` for the complete list of dependencies and their versions.
+- `dartz`: A functional programming library for Dart that provides types and functions for handling operations like Either.
+- `dio`: An HTTP client for Dart that supports.
+- `equatable`: A Dart package that helps to implement equality without needing to override '==' and 'hashCode' manually.
+- `flutter_riverpod`: .
+- `freezed_annotation`: Annotations for the Freezed package, which helps to generate data classes in Dart.
+- `json_serializable`: A code generator for JSON serialization that generates code for encoding and decoding JSON directly from your Dart classes.
+- `json_annotation`: Supports JSON serialization and deserialization in Dart. Used in conjunction with json_serializable.
+- `path_provider`: A Flutter plugin for finding commonly used locations on the filesystem, such as the temp and app data directories.
+- `shared_preferences`: A Flutter plugin for storing simple data in a key-value format on the device.
+- `riverpod_annotation`: Annotations for Riverpod to generate providers and simplify dependency injection.
+- `mocktail`: A Dart package that simplifies creating mocks and stubs in tests, particularly for unit testing.
+- `build_runner`: A tool to generate files using Dart code generators.
+- `custom_lint`: A plugin to create custom lint rules for Dart and Flutter projects.
+- `riverpod_generator`: A code generator for Riverpod to automate the creation of providers.
+- `riverpod_lint`: A set of lint rules to improve the use of Riverpod in Dart and Flutter projects.
+- `freezed`: A code generator for pattern-matching/copy in Dart.
 
 ## Error Handling
 
 The application includes robust error handling mechanisms to manage various scenarios, such as network failures, invalid tokens, and daemon errors. Errors are logged and displayed to the user appropriately.
-
-## Additional Features
-
-- **Notifications**: Optionally, you can add notifications for status changes.
-- **System Tray Integration**: The app can be enhanced to run in the system tray for better user experience.
-- **Packaging**: Package the app for easy installation on macOS, Windows, or Linux.
-
-## Contact
-
-If you have any questions or issues, please reach out to your recruiter or contact the project maintainer through the provided communication channels.
-
