@@ -14,8 +14,6 @@ import 'package:ztc/src/application/services/timer_manager.dart';
 import 'package:ztc/src/application/services/timer_manager_provider.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
 import 'package:ztc/src/data/auth_token_data_store_provider.dart';
-import 'package:ztc/src/data/bytes_converter.dart';
-import 'package:ztc/src/data/bytes_converter_provider.dart';
 import 'package:ztc/src/data/log_data_store.dart';
 import 'package:ztc/src/data/log_data_store_provider.dart';
 import 'package:ztc/src/data/socket_data_store.dart';
@@ -25,8 +23,6 @@ import 'package:ztc/src/data/socket_data_store_provider.dart';
 class MockAuthService extends Mock implements AuthService {}
 
 class MockAuthTokenDataStore extends Mock implements AuthTokenDataStore {}
-
-class MockBytesManager extends Mock implements BytesConverter {}
 
 class MockLogManager extends Mock implements LogDataStore {}
 
@@ -40,7 +36,6 @@ void main() {
   // Create instances of the mock classes
   final mockAuthService = MockAuthService();
   final mockAuthTokenDataStore = MockAuthTokenDataStore();
-  final mockBytesManager = MockBytesManager();
   final mockLogManager = MockLogManager();
   final mockSocketRepository = MockSocketRepository();
   final mockTimerManager = MockTimerManager();
@@ -63,13 +58,11 @@ void main() {
         overrides: [
           authServiceProvider.overrideWithValue(mockAuthService),
           authTokenProvider.overrideWithValue(mockAuthTokenDataStore),
-          bytesConverterProvider.overrideWithValue(mockBytesManager),
           logDataStoreProvider.overrideWithValue(mockLogManager),
           socketDataStoreProvider.overrideWithValue(mockSocketRepository),
           timerManagerProvider.overrideWithValue(mockTimerManager),
           connectionServiceNotifierProvider.overrideWith((ref) {
             return ConnectionServiceNotifier(
-              ref.read(bytesConverterProvider),
               ref.read(authServiceProvider),
               ref.read(logDataStoreProvider),
               ref.read(authTokenProvider),

@@ -4,17 +4,15 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:ztc/src/data/bytes_converter.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 import 'package:ztc/src/utils/ext.dart';
 
 class SocketDataStore {
-  final BytesConverter bytesConverter;
   Socket? _socket;
   bool _isConnected = false;
   bool get isConnected => _isConnected;
 
-  SocketDataStore(this.bytesConverter);
+  SocketDataStore();
 
   Future<void> connectSocket(
     Function(String) success,

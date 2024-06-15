@@ -6,8 +6,6 @@ import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/application/services/auth_service_provider.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
 import 'package:ztc/src/data/auth_token_data_store_provider.dart';
-import 'package:ztc/src/data/bytes_converter.dart';
-import 'package:ztc/src/data/bytes_converter_provider.dart';
 import 'package:ztc/src/data/log_data_store.dart';
 import 'package:ztc/src/data/log_data_store_provider.dart';
 import 'package:ztc/src/data/socket_data_store.dart';
@@ -17,14 +15,13 @@ import 'package:ztc/src/domain/models/socket_state.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
 class ConnectionServiceNotifier extends StateNotifier<SocketState> {
-  final BytesConverter bytesConverter;
   final AuthService authService;
   final LogDataStore logManager;
   final AuthTokenDataStore authTokenDataStore;
   final SocketDataStore socketDataStore;
 
-  ConnectionServiceNotifier(this.bytesConverter, this.authService,
-      this.logManager, this.authTokenDataStore, this.socketDataStore)
+  ConnectionServiceNotifier(this.authService, this.logManager,
+      this.authTokenDataStore, this.socketDataStore)
       : super(const SocketDisconnected());
 
   Future<void> connectSocket() async {
@@ -74,6 +71,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
             "connect": int.parse(cachedToken),
           }
         });
+        print("object");
       },
     );
   }
@@ -143,13 +141,11 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
 
 final connectionServiceNotifierProvider =
     StateNotifierProvider<ConnectionServiceNotifier, SocketState>((ref) {
-  final bytesConverter = ref.read(bytesConverterProvider);
   final AuthService client = ref.read(authServiceProvider);
   final logManager = ref.read(logDataStoreProvider);
   final SocketDataStore socketRepository = ref.read(socketDataStoreProvider);
   final AuthTokenDataStore authTokenDS = ref.read(authTokenProvider);
   return ConnectionServiceNotifier(
-    bytesConverter,
     client,
     logManager,
     authTokenDS,

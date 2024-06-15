@@ -6,13 +6,11 @@ import 'package:mocktail/mocktail.dart';
 import 'package:ztc/src/application/services/auth_service.dart';
 import 'package:ztc/src/application/services/connection_service_notifier.dart';
 import 'package:ztc/src/data/auth_token_data_store.dart';
-import 'package:ztc/src/data/bytes_converter.dart';
 import 'package:ztc/src/data/log_data_store.dart';
 import 'package:ztc/src/data/socket_data_store.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 
 // Mock classes
-class MockBytesManager extends Mock implements BytesConverter {}
 
 class MockAuthService extends Mock implements AuthService {}
 
@@ -20,28 +18,53 @@ class MockLogManager extends Mock implements LogDataStore {}
 
 class MockAuthTokenDataStore extends Mock implements AuthTokenDataStore {}
 
-class MockSocketRepository extends Mock implements SocketDataStore {}
+class MockSocketDataStore extends Mock implements SocketDataStore {
+  late Function(String) success;
+  late Function(String) failure;
+  final String json;
+
+  // Empty constructor with default json value
+  MockSocketDataStore() : json = '';
+
+  // Named factory constructor
+  factory MockSocketDataStore.withJson(String json) {
+    return MockSocketDataStore._internal(json: json);
+  }
+
+  MockSocketDataStore._internal({required this.json});
+
+  @override
+  Future<void> connectSocket(
+      Function(String) success, Function(String) failure) async {
+    this.success = success;
+    this.failure = failure;
+  }
+
+  @override
+  Future<void> sendRequest(Map<String, dynamic> requestPayload) async {
+    success(json);
+    return Future.value();
+  }
+}
 
 void main() {
-  late MockBytesManager mockBytesManager;
   late MockAuthService mockAuthService;
   late MockLogManager mockLogManager;
   late MockAuthTokenDataStore mockAuthTokenDataStore;
-  late MockSocketRepository mockSocketRepository;
+  late MockSocketDataStore mockSocketDataStore;
   late ConnectionServiceNotifier connectionServiceNotifier;
 
   setUp(() {
-    mockBytesManager = MockBytesManager();
     mockAuthService = MockAuthService();
     mockLogManager = MockLogManager();
     mockAuthTokenDataStore = MockAuthTokenDataStore();
-    mockSocketRepository = MockSocketRepository();
+    mockSocketDataStore = MockSocketDataStore.withJson(
+        '{"status":"success","data":{"daemon_status":"connected"}}');
     connectionServiceNotifier = ConnectionServiceNotifier(
-      mockBytesManager,
       mockAuthService,
       mockLogManager,
       mockAuthTokenDataStore,
-      mockSocketRepository,
+      mockSocketDataStore,
     );
   });
 
@@ -49,13 +72,13 @@ void main() {
     // Arrange
     when(() => mockAuthTokenDataStore.getAuthToken())
         .thenAnswer((_) async => const Right("1234"));
-    when(() => mockSocketRepository.sendRequest(any())).thenAnswer((_) async =>
-        jsonDecode(
-            '{"status":"success","data":{"daemon_status":"connected"}}'));
+    when(() => mockAuthTokenDataStore.saveAuthToken(any()))
+        .thenAnswer((_) async {});
     when(() => mockAuthTokenDataStore.clearAuthToken())
         .thenAnswer((_) async {});
 
     // Act
+    await connectionServiceNotifier.connectSocket();
     await connectionServiceNotifier.connect();
 
     // Assert
@@ -69,10 +92,9 @@ void main() {
   test('disconnect should update state to SocketDisconnected on success',
       () async {
     // Arrange
-    when(() => mockSocketRepository.sendRequest(any()))
-        .thenAnswer((_) async => {
-              'data': {'daemon_status': 'disconnected'}
-            });
+    when(() => mockSocketDataStore.sendRequest(any())).thenAnswer((_) async => {
+          'data': {'daemon_status': 'disconnected'}
+        });
 
     // Act
     await connectionServiceNotifier.disconnect();
@@ -83,10 +105,9 @@ void main() {
 
   test('getStatus should update state based on daemon status', () async {
     // Arrange
-    when(() => mockSocketRepository.sendRequest(any()))
-        .thenAnswer((_) async => {
-              'data': {'daemon_status': 'connected'}
-            });
+    when(() => mockSocketDataStore.sendRequest(any())).thenAnswer((_) async => {
+          'data': {'daemon_status': 'connected'}
+        });
 
     // Act
     await connectionServiceNotifier.getStatus();
@@ -95,10 +116,9 @@ void main() {
     expect(connectionServiceNotifier.state, isA<SocketConnected>());
 
     // Arrange for disconnected status
-    when(() => mockSocketRepository.sendRequest(any()))
-        .thenAnswer((_) async => {
-              'data': {'daemon_status': 'disconnected'}
-            });
+    when(() => mockSocketDataStore.sendRequest(any())).thenAnswer((_) async => {
+          'data': {'daemon_status': 'disconnected'}
+        });
 
     // Act
     await connectionServiceNotifier.getStatus();
