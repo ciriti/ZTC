@@ -28,13 +28,83 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 
 ## Architecture
 
-The application is structured as follows:
+The application is designed following the principles of Clean Architecture and SOLID principles to ensure maintainability, scalability, and testability.
 
-- **Main Application**: The entry point of the application. Initializes necessary components and runs the app.
-- **Pages**: Contains the main UI of the application, including the home page where users can connect/disconnect and view status.
-- **Services**: Contains the logic for managing connections, fetching tokens, and interacting with the daemon.
-- **Models**: Defines the data models used in the application.
-- **Providers**: Uses Riverpod for state management, providing necessary dependencies throughout the app.
+### Layers
+
+1. **Presentation Layer**: Handles the UI of the application.
+2. **Application Layer**: Contains the business logic of the application.
+3. **Domain Layer**: Defines the core entities and use cases.
+4. **Data Layer**: Manages data operations, including network requests and local storage.
+
+Note: The files with `.freezed.dart` and `.g.dart` extensions are generated files and can be ignored.
+
+Directory structure:
+```
+.
+├── main.dart
+└── src
+    ├── application
+    │   └── services
+    │       ├── auth_service.dart
+    │       ├── auth_service_provider.dart
+    │       ├── connection_service_notifier.dart
+    │       ├── timer_manager.dart
+    │       └── timer_manager_provider.dart
+    ├── data
+    │   ├── auth_token_data_store.dart
+    │   ├── auth_token_data_store_provider.dart
+    │   ├── bytes_converter.dart
+    │   ├── bytes_converter_provider.dart
+    │   ├── log_data_store.dart
+    │   ├── log_data_store_provider.dart
+    │   ├── socket_data_store.dart
+    │   └── socket_data_store_provider.dart
+    ├── domain
+    │   └── models
+    │       ├── auth_token.dart
+    │       ├── socket_response.dart
+    │       └── socket_state.dart
+    ├── exceptions
+    │   ├── safe_execution.dart
+    │   └── ztc_exceptions.dart
+    ├── presentation
+    │   └── pages
+    │       └── ztc_home_page.dart
+    └── utils
+        ├── app_sizes.dart
+        └── ext.dart
+```
+
+### Explanation
+
+- **Presentation Layer**: Contains the UI components.
+  - `ztc_home_page.dart`: The main UI page where users interact with the application.
+
+- **Application Layer**: Contains service classes that coordinate the business logic.
+  - `auth_service.dart`: Manages authentication-related operations.
+  - `auth_service_provider.dart`: Provides authentication service instance.
+  - `connection_service_notifier.dart`: Manages the connection state and interacts with the data layer.
+  - `timer_manager.dart`: Manages periodic tasks, such as status updates.
+
+- **Domain Layer**: Defines the entities.
+  - `auth_token.dart`: Represents the authentication token.
+  - `socket_response.dart`: Represents the response from the socket.
+  - `socket_state.dart`: Represents the state of the socket connection.
+
+- **Data Layer**: Manages data sources, such as APIs and local storage.
+  - `auth_token_data_store.dart`: Manages the storage of authentication tokens.
+  - `bytes_converter.dart`: Handles byte conversion for socket communication.
+  - `log_data_store.dart`: Manages logs for the application.
+  - `socket_data_store.dart`: Manages socket connections and communication.
+
+- **Exceptions**: Contains custom exception classes for error handling.
+  - `safe_execution.dart`: Provides a safe execution wrapper to handle errors gracefully.
+  - `ztc_exceptions.dart`: Defines custom exceptions for the application.
+
+- **Utilities**: Contains utility functions and constants used throughout the application.
+  - `app_sizes.dart`: Defines standard sizes for UI components.
+  - `ext.dart`: Contains extension methods for various operations.
 
 ## Setup and Installation
 
