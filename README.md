@@ -5,7 +5,7 @@
 
 ## Introduction
 
-ZT Client is a simplified GUI application that represents a VPN app. The app interacts with a mock registration API and a provided mock networking daemon/service to manage VPN connections. The application demonstrates how to establish a connection, disconnect, and check the status of the VPN connection.
+ZT Client is a simplified GUI application that represents a VPN app. The app interacts with a mock registration API and a provided mock networking daemon/service to manage the connections. The application demonstrates how to establish a connection, disconnect, and check the status of the VPN connection.
 
 ## Table of Contents
 
