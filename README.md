@@ -22,7 +22,7 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 ## Features
 
 - Connect to a mock daemon after contact the registration API.
-- Disconnect from the VPN.
+- Disconnect.
 - Display the current status of the connection.
 - Periodically check the status of the daemon.
 - Cache the authentication token for up to 5 minutes.
