@@ -19,35 +19,41 @@ void main() {
   });
 
   test('saveAuthToken saves token and timestamp', () async {
+    // Act
     await dataStore.saveAuthToken('test_token');
 
+    // Assert
     expect(
         preferences.getString(AuthTokenDataStore.keyAuthToken), 'test_token');
     expect(preferences.getInt(AuthTokenDataStore.keyTokenTimestamp), isNotNull);
   });
 
   test('getAuthToken returns token if not expired', () async {
+    // Act
     await dataStore.saveAuthToken('test_token');
 
     final token = await dataStore.getAuthToken();
-
+    // Assert
     expect(token, isA<Right>());
   });
 
   test('getAuthToken returns null if expired', () async {
+    // Act
     await dataStore.saveAuthToken('test_token');
     await Future.delayed(
         const Duration(seconds: 2)); // Wait for token to expire
 
     final token = await dataStore.getAuthToken();
 
+    // Assert
     expect(token, isA<Left>());
   });
 
   test('clearAuthToken clears token and timestamp', () async {
+    // Act
     await dataStore.saveAuthToken('test_token');
     await dataStore.clearAuthToken();
-
+    // Assert
     expect(preferences.getString(AuthTokenDataStore.keyAuthToken), isNull);
     expect(preferences.getInt(AuthTokenDataStore.keyTokenTimestamp), isNull);
   });

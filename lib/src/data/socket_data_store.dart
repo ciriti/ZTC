@@ -18,7 +18,7 @@ class SocketDataStore {
   bool _isConnected = false;
   bool get isConnected => _isConnected;
 
-  SocketDataStore();
+  SocketDataStore({Socket? socket}) : _socket = socket;
 
   /// Connects to the socket and sets up listeners for incoming data, errors, and completion.
   ///
@@ -29,12 +29,14 @@ class SocketDataStore {
     Function(String) failure,
   ) async {
     try {
-      var tempDir = await getTemporaryDirectory();
-      String socketPath = "${tempDir.path}/daemon-lite";
-      _socket = await Socket.connect(
-        InternetAddress(socketPath, type: InternetAddressType.unix),
-        0,
-      );
+      if (_socket == null) {
+        var tempDir = await getTemporaryDirectory();
+        String socketPath = "${tempDir.path}/daemon-lite";
+        _socket = await Socket.connect(
+          InternetAddress(socketPath, type: InternetAddressType.unix),
+          0,
+        );
+      }
 
       _socket?.listen(
         (data) {
@@ -48,9 +50,7 @@ class SocketDataStore {
 
             // Decode the JSON payload
             String jsonString = utf8.decode(jsonPayloadBytes);
-            Map<String, dynamic> json = jsonDecode(jsonString);
 
-            print('BytesManager: $json');
             _isConnected = true;
             success(jsonString);
           } catch (e) {
