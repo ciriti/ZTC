@@ -12,6 +12,7 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 
 - [Introduction](#introduction)
 - [Features](#features)
+- [App flow](#app-flow)
 - [Architecture](#architecture)
 - [Setup and Installation](#setup-and-installation)
 - [Running the Application](#running-the-application)
@@ -27,6 +28,15 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 - Periodically check the status of the daemon.
 - Cache the authentication token for up to 5 minutes.
 
+## App flow
+
+When the app starts, it initializes necessary resources, sets up the main interface, establishes a socket connection channel to the daemon, and starts the monitoring process by periodically fetching the daemon status.
+The main screen displays the current connection status, buttons to connect/disconnect, and a log of activities.
+When the user taps "Connect", the app fetches an authentication token. If no valid cached token is available, it retrieves a new token from the authentication service. This token is then used to send a connection request to the daemon through the established socket channel.
+The user can tap "Disconnect" to send a disconnect request to the daemon, and the app updates the status accordingly.
+
+![GUI Screenshot](img/GUI.png)
+
 ## Architecture
 
 The application is designed following the principles of Clean Architecture and SOLID principles to ensure maintainability, scalability, and testability.
@@ -35,7 +45,7 @@ The application is designed following the principles of Clean Architecture and S
 
 1. **Presentation Layer**: Handles the UI of the application.
 2. **Application Layer**: Contains the business logic of the application.
-3. **Domain Layer**: Defines the core entities and use cases.
+3. **Domain Layer**: Defines the core entities.
 4. **Data Layer**: Manages data operations, including network requests and local storage.
 
 Note: The files with `.freezed.dart` and `.g.dart` extensions are generated files and can be ignored.
