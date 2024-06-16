@@ -125,6 +125,7 @@ Directory structure:
 
 ### Prerequisites
 
+- A Mac computer
 - Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
 
 ### Clone the Repository
@@ -135,6 +136,7 @@ cd ZTC
 ```
 
 Note: This repository is private. To access it, one possible option is using a [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
+
 
 ### Install Dependencies
 
