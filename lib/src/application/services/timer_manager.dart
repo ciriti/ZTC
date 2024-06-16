@@ -15,7 +15,6 @@ class TimerManager {
   ///
   /// [callback] is the function to be executed periodically.
   void startLogging(void Function() callback) {
-    callback();
     _timer = Timer.periodic(Duration(seconds: duration), (timer) {
       callback();
     });
