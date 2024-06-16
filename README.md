@@ -31,8 +31,12 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 ## App flow
 
 When the app starts, it initializes necessary resources, sets up the main interface, establishes a socket connection channel to the daemon, and starts the monitoring process by periodically fetching the daemon status.
+
 The main screen displays the current connection status, buttons to connect/disconnect, and a log of activities.
-When the user taps "Connect", the app fetches an authentication token. If no valid cached token is available, it retrieves a new token from the authentication service. This token is then used to send a connection request to the daemon through the established socket channel.
+When the user taps "Connect", the app fetches an authentication token. 
+
+If no valid cached token is available, it retrieves a new token from the authentication service. This token is then used to send a connection request to the daemon through the established socket channel.
+
 The user can tap "Disconnect" to send a disconnect request to the daemon, and the app updates the status accordingly.
 
 ![GUI Screenshot](img/GUI.png)
