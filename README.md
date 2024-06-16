@@ -130,9 +130,11 @@ Directory structure:
 ### Clone the Repository
 
 ```sh
-git clone https://github.com/ciriti/ZTC.git
+git clone https://\<your_personal_access_token\>@github.com/ciriti/ZTC.git
 cd ZTC
 ```
+
+Note: This repository is private. To access it, one possible option is using a [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 
 ### Install Dependencies
 
