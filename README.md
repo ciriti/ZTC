@@ -180,7 +180,7 @@ For integration:
 
 ```sh
 flutter test ui_test
-flutter run -t ui_test/ztc_home_page_test.dart  -d macos // to test in simulator
+flutter run -t ui_test/ztc_home_page_test.dart  -d macos # to test in simulator
 ```
 
 ## Dependencies
