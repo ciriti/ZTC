@@ -69,8 +69,6 @@ Directory structure:
     ├── data
     │   ├── auth_token_data_store.dart
     │   ├── auth_token_data_store_provider.dart
-    │   ├── bytes_converter.dart
-    │   ├── bytes_converter_provider.dart
     │   ├── log_data_store.dart
     │   ├── log_data_store_provider.dart
     │   ├── socket_data_store.dart
@@ -109,7 +107,6 @@ Directory structure:
 
 - **Data Layer**: Manages data sources, such as APIs and local storage.
   - `auth_token_data_store.dart`: Manages the storage of authentication tokens.
-  - `bytes_converter.dart`: Handles byte conversion for socket communication.
   - `log_data_store.dart`: Manages logs for the application.
   - `socket_data_store.dart`: Manages socket connections and communication.
 
