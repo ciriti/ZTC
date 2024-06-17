@@ -7,24 +7,36 @@ import 'package:path_provider/path_provider.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 import 'package:ztc/src/utils/ext.dart';
 
+/// A data store class for managing socket connections and data transmission.
+///
+/// The `SocketDataStore` class handles the lifecycle of a socket connection,
+/// including connecting to a socket, sending requests, and closing the socket.
+/// It provides methods to connect to a Unix domain socket, send JSON-encoded
+/// requests, and handle incoming data from the socket.
 class SocketDataStore {
   Socket? _socket;
   bool _isConnected = false;
   bool get isConnected => _isConnected;
 
-  SocketDataStore();
+  SocketDataStore({Socket? socket}) : _socket = socket;
 
+  /// Connects to the socket and sets up listeners for incoming data, errors, and completion.
+  ///
+  /// [success] is called with the received data when the socket connection is successful.
+  /// [failure] is called with an error message when an error occurs.
   Future<void> connectSocket(
     Function(String) success,
     Function(String) failure,
   ) async {
     try {
-      var tempDir = await getTemporaryDirectory();
-      String socketPath = "${tempDir.path}/daemon-lite";
-      _socket = await Socket.connect(
-        InternetAddress(socketPath, type: InternetAddressType.unix),
-        0,
-      );
+      if (_socket == null) {
+        var tempDir = await getTemporaryDirectory();
+        String socketPath = "${tempDir.path}/daemon-lite";
+        _socket = await Socket.connect(
+          InternetAddress(socketPath, type: InternetAddressType.unix),
+          0,
+        );
+      }
 
       _socket?.listen(
         (data) {
@@ -38,9 +50,7 @@ class SocketDataStore {
 
             // Decode the JSON payload
             String jsonString = utf8.decode(jsonPayloadBytes);
-            Map<String, dynamic> json = jsonDecode(jsonString);
 
-            print('BytesManager: $json');
             _isConnected = true;
             success(jsonString);
           } catch (e) {
@@ -66,6 +76,9 @@ class SocketDataStore {
     }
   }
 
+  /// Sends a JSON-encoded request payload to the socket.
+  ///
+  /// [requestPayload] is the request data to be sent to the socket.
   Future<void> sendRequest(Map<String, dynamic> requestPayload) async {
     try {
       String jsonPayload = jsonEncode(requestPayload);
@@ -80,6 +93,7 @@ class SocketDataStore {
     }
   }
 
+  /// Closes the socket connection.
   void closeSocket() {
     try {
       _socket?.close();

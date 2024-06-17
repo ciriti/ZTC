@@ -1,7 +1,9 @@
+/// Represents the different states of the socket connection.
 sealed class SocketState {
   const SocketState();
 }
 
+/// The initial state of the socket connection.
 final class SocketInitial extends SocketState {
   const SocketInitial();
 
@@ -9,6 +11,7 @@ final class SocketInitial extends SocketState {
   String toString() => 'Init';
 }
 
+/// The state when the socket is attempting to connect.
 final class SocketConnecting extends SocketState {
   const SocketConnecting();
 
@@ -16,6 +19,7 @@ final class SocketConnecting extends SocketState {
   String toString() => 'Connecting';
 }
 
+/// The state when the socket is successfully connected.
 final class SocketConnected extends SocketState {
   const SocketConnected();
 
@@ -23,6 +27,7 @@ final class SocketConnected extends SocketState {
   String toString() => 'Connected';
 }
 
+/// The state when the socket is attempting to disconnect.
 final class SocketDisconnecting extends SocketState {
   const SocketDisconnecting();
 
@@ -30,6 +35,7 @@ final class SocketDisconnecting extends SocketState {
   String toString() => 'Disconnecting';
 }
 
+/// The state when the socket is successfully disconnected.
 final class SocketDisconnected extends SocketState {
   const SocketDisconnected();
 
@@ -37,6 +43,7 @@ final class SocketDisconnected extends SocketState {
   String toString() => 'Disconnected';
 }
 
+/// The state when an error occurs with the socket connection.
 final class SocketError extends SocketState {
   final String message;
   SocketError(this.message);
@@ -45,6 +52,7 @@ final class SocketError extends SocketState {
   String toString() => 'Error(message: $message)';
 }
 
+/// The state when data is received from the socket.
 final class SocketDataReceived extends SocketState {
   final String message;
   const SocketDataReceived(this.message);

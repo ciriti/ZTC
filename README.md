@@ -1,4 +1,5 @@
 [![Test](https://github.com/ciriti/ZTC/actions/workflows/ci.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/ci.yml)
+[![Test](https://github.com/ciriti/ZTC/actions/workflows/ci-it.yml/badge.svg)](https://github.com/ciriti/ZTC/actions/workflows/ci-it.yml)
 
 
 # ZT Client
@@ -11,6 +12,7 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 
 - [Introduction](#introduction)
 - [Features](#features)
+- [App flow](#app-flow)
 - [Architecture](#architecture)
 - [Setup and Installation](#setup-and-installation)
 - [Running the Application](#running-the-application)
@@ -21,10 +23,23 @@ ZT Client is a simplified GUI application that represents a VPN app. The app int
 ## Features
 
 - Connect to a mock daemon after contact the registration API.
-- Disconnect from the VPN.
+- Disconnect.
 - Display the current status of the connection.
 - Periodically check the status of the daemon.
 - Cache the authentication token for up to 5 minutes.
+
+## App flow
+
+When the app starts, it initializes necessary resources, sets up the main interface, establishes a socket connection channel to the daemon, and starts the monitoring process by periodically fetching the daemon status.
+
+The main screen displays the current connection status, buttons to connect/disconnect, and a log of activities.
+When the user taps "Connect", the app fetches an authentication token. 
+
+If no valid cached token is available, it retrieves a new token from the authentication service. This token is then used to send a connection request to the daemon through the established socket channel.
+
+The user can tap "Disconnect" to send a disconnect request to the daemon, and the app updates the status accordingly.
+
+![GUI Screenshot](img/GUI.png)
 
 ## Architecture
 
@@ -34,7 +49,7 @@ The application is designed following the principles of Clean Architecture and S
 
 1. **Presentation Layer**: Handles the UI of the application.
 2. **Application Layer**: Contains the business logic of the application.
-3. **Domain Layer**: Defines the core entities and use cases.
+3. **Domain Layer**: Defines the core entities.
 4. **Data Layer**: Manages data operations, including network requests and local storage.
 
 Note: The files with `.freezed.dart` and `.g.dart` extensions are generated files and can be ignored.
@@ -110,14 +125,18 @@ Directory structure:
 
 ### Prerequisites
 
+- A Mac computer
 - Flutter SDK: [Install Flutter](https://flutter.dev/docs/get-started/install)
 
 ### Clone the Repository
 
 ```sh
-git clone https://github.com/ciriti/ZTC.git
+git clone https://\<your_personal_access_token\>@github.com/ciriti/ZTC.git
 cd ZTC
 ```
+
+Note: This repository is private. To access it, one possible option is using a [Personal Access Token (PAT)](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
+
 
 ### Install Dependencies
 
@@ -165,7 +184,7 @@ For integration:
 
 ```sh
 flutter test ui_test
-flutter run -t ui_test/ztc_home_page_test.dart  -d macos // to test in simulator
+flutter run -t ui_test/ztc_home_page_test.dart  -d macos # to test in simulator
 ```
 
 ## Dependencies

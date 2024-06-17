@@ -4,6 +4,7 @@ import 'package:ztc/src/utils/ext.dart';
 
 part 'auth_token_data_store_provider.g.dart';
 
+/// Provides an instance of `AuthTokenDataStore` for dependency injection using Riverpod.
 @riverpod
 AuthTokenDataStore authToken(AuthTokenRef ref) {
   return buildAuthTokenDataStore(

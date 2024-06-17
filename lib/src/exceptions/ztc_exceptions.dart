@@ -1,3 +1,8 @@
+/// The base class for all custom exceptions.
+///
+/// This class extends the [Exception] class and includes a message to describe
+/// the error. It provides a common structure for all specific exceptions
+/// within the application.
 sealed class ZTCException implements Exception {
   final String message;
   ZTCException(this.message);

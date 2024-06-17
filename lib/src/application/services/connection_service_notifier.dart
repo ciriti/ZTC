@@ -14,6 +14,25 @@ import 'package:ztc/src/domain/models/socket_response.dart';
 import 'package:ztc/src/domain/models/socket_state.dart';
 import 'package:ztc/src/exceptions/safe_execution.dart';
 
+/// The `ConnectionServiceNotifier` class is responsible for managing the connection
+/// state of the application. It extends `StateNotifier<SocketState>` to provide
+/// reactive state management for the connection state.
+///
+/// The class handles connecting, disconnecting, and checking the status of the
+/// socket connection, as well as managing authentication tokens and logging
+/// connection-related events.
+///
+/// The class provides the following methods:
+/// - `connectSocket()`: Initiates the socket connection and sets up the success and failure callbacks.
+/// - `connect()`: Attempts to connect to the socket using either a cached or newly fetched authentication token.
+/// - `disconnect()`: Sends a disconnect request to the socket.
+/// - `getStatus()`: Requests the current status of the socket connection.
+/// - `_handleAuthToken(String jsonString)`: Handles the response containing the authentication token.
+///
+/// The class also maintains the connection state and logs events during the connection process.
+///
+/// The `connectionServiceNotifierProvider` is a `StateNotifierProvider` that provides an instance of
+/// `ConnectionServiceNotifier` for dependency injection using Riverpod.
 class ConnectionServiceNotifier extends StateNotifier<SocketState> {
   final AuthService authService;
   final LogDataStore logManager;
@@ -24,6 +43,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
       this.authTokenDataStore, this.socketDataStore)
       : super(const SocketDisconnected());
 
+  /// Initiates the socket connection and sets up the success and failure callbacks.
   Future<void> connectSocket() async {
     await socketDataStore.connectSocket(
       _handleAuthToken,
@@ -34,6 +54,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     );
   }
 
+  /// Attempts to connect to the socket using either a cached or newly fetched authentication token.
   Future<void> connect() async {
     logManager.addLog('Daemon: Attempting to connect...');
     state = const SocketConnecting();
@@ -75,6 +96,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     );
   }
 
+  /// Handles the response containing the authentication token.
   Future<void> _handleAuthToken(String jsonString) async {
     try {
       final result = SocketResponse.fromJson(jsonDecode(jsonString));
@@ -114,6 +136,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     }
   }
 
+  /// Sends a disconnect request to the socket.
   Future<void> disconnect() async {
     logManager.addLog('Daemon: Attempting to disconnect...');
     state = const SocketDisconnecting();
@@ -126,6 +149,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
     }
   }
 
+  /// Requests the current status of the socket connection.
   Future<void> getStatus() async {
     logManager.addLog('Status: Attempting to refresh...');
 
@@ -138,6 +162,7 @@ class ConnectionServiceNotifier extends StateNotifier<SocketState> {
   }
 }
 
+/// Provides an instance of `ConnectionServiceNotifier` for dependency injection using Riverpod.
 final connectionServiceNotifierProvider =
     StateNotifierProvider<ConnectionServiceNotifier, SocketState>((ref) {
   final AuthService client = ref.read(authServiceProvider);

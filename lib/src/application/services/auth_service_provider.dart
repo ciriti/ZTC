@@ -4,6 +4,7 @@ import 'package:ztc/src/application/services/auth_service.dart';
 
 part 'auth_service_provider.g.dart';
 
+/// Provides an instance of `AuthService` for dependency injection using Riverpod.
 @riverpod
 AuthService authService(AuthServiceRef ref) {
   return authServiceFactory(
